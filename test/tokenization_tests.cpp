@@ -25,6 +25,10 @@ namespace vparser {
     }
 
     REQUIRE(tokens.size() == 5);
+  }
+
+  TEST_CASE("Real verilog file") {
     
   }
+
 }
