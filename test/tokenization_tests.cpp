@@ -20,6 +20,10 @@ namespace vparser {
     string test_str = "module(); endmodule";
     vector<string> tokens = tokenize(test_str);
 
+    for (auto& tok : tokens) {
+      cout << tok << endl;
+    }
+
     REQUIRE(tokens.size() == 5);
     
   }
