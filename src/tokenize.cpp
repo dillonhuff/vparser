@@ -54,6 +54,10 @@ namespace vparser {
   bool is_separator(const char c) {
     return (c == '(') ||
       (c == ')') ||
+      (c == '{') ||
+      (c == '}') ||
+      (c == '"') ||
+      (c == '.') ||
       (c == '[') ||
       (c == ']') ||
       (c == ';') ||
@@ -122,7 +126,44 @@ namespace vparser {
   }
 
   bool is_boolop(const char c) {
-    return (c == '&') || (c == '|') || (c == '-') || (c == '+');
+    return (c == '&') || (c == '|') || (c == '-') || (c == '+') ||
+      (c == '~') ||
+      (c == '*');
+  }
+
+  string parse_gt(parse_state& ps) {
+    assert(ps.next() == '>');
+
+    string res = ">";
+    ps++;
+
+    if (ps.next() == '>') {
+      res += ps.next();
+      ps++;
+      return res;
+    }
+
+    return res;
+  }
+
+  string parse_lt(parse_state& ps) {
+    assert(ps.next() == '<');
+
+    if ((ps.next(1) == '=') || (ps.next(1) == '<')) {
+
+      string next_tok = "";
+      next_tok += ps.next();
+      next_tok += ps.next(1);
+      ps++;
+      ps++;
+
+      return next_tok;
+    }
+
+    string next_tok(1, ps.next());
+    ps++;
+
+    return next_tok;
   }
 
   std::vector<std::string> tokenize(const std::string& verilog_code) {
@@ -134,6 +175,10 @@ namespace vparser {
     while (ps.chars_left()) {
 
       ignore_whitespace(ps);
+
+      if (!ps.chars_left()) {
+	break;
+      }
 
       char c = ps.next();
 
@@ -160,8 +205,18 @@ namespace vparser {
 
 	ps++;
 
+      } else if (c == '<') {
+	parse_lt(ps);
+
+      } else if (c == '>') {
+	nextTok = parse_gt(ps);
       } else if (is_boolop(c)) {
 	nextTok = string(1, c);
+	ps++;
+      } else if (c == '!') {
+	assert(ps.next(1) == '=');
+	nextTok = "!=";
+	ps++;
 	ps++;
       } else {
 	

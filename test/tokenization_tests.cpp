@@ -36,6 +36,12 @@ namespace vparser {
     REQUIRE(tokens.size() == 5);
   }
 
+  TEST_CASE("Equals sign with strange ending") {
+    vector<string> tokens = tokenize("assign a = b;\n\n  ");
+    REQUIRE(tokens[2] == "=");
+    REQUIRE(tokens.size() == 5);
+  }
+  
   TEST_CASE("Multiple comments in a row") {
     string test_str = " \n // Hello this is a comment string \n// ";
     vector<string> tokens = tokenize(test_str);
