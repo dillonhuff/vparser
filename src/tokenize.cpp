@@ -62,7 +62,8 @@ namespace vparser {
       (c == ':') ||
       (c == '$') ||
       (c == '\'') ||
-      (c == '?');
+      (c == '?') ||
+      (c == '@');
   }
 
   bool comment_start(const parse_state& ps) {
@@ -76,30 +77,38 @@ namespace vparser {
     return false;
   }
 
+  void ignore_comment(parse_state& ps) {
+    assert(comment_start(ps));
+
+    while (ps.chars_left() && (ps.next() != '\n')) {
+      ps++;
+    }
+  }
+
   void ignore_whitespace(parse_state& ps) {
     while (ps.chars_left() && isspace(ps.next())) {
       ps++;
     }
 
-    if (!ps.chars_left()) {
-      return;
-    }
+    // if (!ps.chars_left()) {
+    //   return;
+    // }
 
-    char c = ps.next();
-    char cd = ps.next(1);
+    // char c = ps.next();
+    // char cd = ps.next(1);
 
-    if ((c == '/') && (cd == '/')) {
-      cout << "Parsing comment" << endl;
-      ps++;
-      ps++;
-      while (ps.next() != '\n') {
-	ps++;
-      }
-    }
+    // if ((c == '/') && (cd == '/')) {
+    //   cout << "Parsing comment" << endl;
+    //   ps++;
+    //   ps++;
+    //   while (ps.next() != '\n') {
+    // 	ps++;
+    //   }
+    // }
 
-    while (ps.chars_left() && isspace(ps.next())) {
-      ps++;
-    }
+    // while (ps.chars_left() && isspace(ps.next())) {
+    //   ps++;
+    // }
     
   }
 
@@ -140,7 +149,7 @@ namespace vparser {
 	ps++;
 	continue;
       } else if (comment_start(ps)) {
-	ignore_whitespace(ps);
+	ignore_comment(ps);
 	continue;
       } else if (c == '=') {
 	if (ps.next(1) == '=') {
