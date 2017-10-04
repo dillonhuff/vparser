@@ -224,8 +224,6 @@ namespace vparser {
 	assert(false);
       }
 
-      cout << "Adding token = " << nextTok << endl;
-
       tokens.push_back(nextTok);
 
       i++;

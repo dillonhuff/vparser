@@ -10,8 +10,10 @@ SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${EXTRA_CXX_COMPILE_FLAGS}")
 
 INCLUDE_DIRECTORIES(./src/)
 
-SET(SRC_FILES ./src/tokenize.cpp)
+SET(SRC_FILES ./src/tokenize.cpp
+	      ./src/parse.cpp)
 
-SET(TEST_FILES ./test/tokenization_tests.cpp)
+SET(TEST_FILES ./test/tokenization_tests.cpp
+	       ./test/parse_module_tests.cpp)
 
 add_executable(all-tests ${TEST_FILES} ${SRC_FILES})
