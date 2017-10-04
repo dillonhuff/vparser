@@ -11,15 +11,23 @@ namespace vparser {
   struct parse_state {
     const std::string& code;
     int i;
+    int lineNo;
 
   public:
-    parse_state(const std::string& str) : code(str), i(0) {}
+    parse_state(const std::string& str) : code(str), i(0), lineNo(1) {}
 
-    bool chars_left() const { return i < code.size(); }
+    bool chars_left() const {
+      return code.size() - i > 0;
+    }
 
     int index() const { return i; }
+    int lineNumber() const { return lineNo; }
 
     parse_state operator++(int) {
+      if (next() == '\n') {
+      	lineNo++;
+      }
+
       i++;
       return *this;
     }
@@ -30,13 +38,14 @@ namespace vparser {
     }
     
     char next() const { return code[i]; }
+
+    char next(const int off) const { return code[i + off]; }
   };
 
   string parse_name(parse_state& ps) {
     string n = "";
-    while (isalpha(ps.next()) && ps.chars_left()) {
+    while ((isalpha(ps.next()) || (ps.next() == '_')) && ps.chars_left()) {
       n += ps.next();
-      cout << ps.index() << endl;
       ps++;
     }
     return n;
@@ -47,7 +56,64 @@ namespace vparser {
       (c == ')') ||
       (c == '[') ||
       (c == ']') ||
-      (c == ';');
+      (c == ';') ||
+      (c == '`') ||
+      (c == ',') ||
+      (c == ':') ||
+      (c == '$') ||
+      (c == '\'') ||
+      (c == '?');
+  }
+
+  bool comment_start(const parse_state& ps) {
+    char c = ps.next();
+    char cd = ps.next(1);
+
+    if ((c == '/') && (cd == '/')) {
+      return true;
+    }
+
+    return false;
+  }
+
+  void ignore_whitespace(parse_state& ps) {
+    while (ps.chars_left() && isspace(ps.next())) {
+      ps++;
+    }
+
+    if (!ps.chars_left()) {
+      return;
+    }
+
+    char c = ps.next();
+    char cd = ps.next(1);
+
+    if ((c == '/') && (cd == '/')) {
+      cout << "Parsing comment" << endl;
+      ps++;
+      ps++;
+      while (ps.next() != '\n') {
+	ps++;
+      }
+    }
+
+    while (ps.chars_left() && isspace(ps.next())) {
+      ps++;
+    }
+    
+  }
+
+  string parse_digits(parse_state& ps) {
+    string s = "";
+    while (ps.chars_left() && isdigit(ps.next())) {
+      s += ps.next();
+      ps++;
+    }
+    return s;
+  }
+
+  bool is_boolop(const char c) {
+    return (c == '&') || (c == '|') || (c == '-') || (c == '+');
   }
 
   std::vector<std::string> tokenize(const std::string& verilog_code) {
@@ -58,21 +124,43 @@ namespace vparser {
 
     while (ps.chars_left()) {
 
+      ignore_whitespace(ps);
+
       char c = ps.next();
 
       string nextTok;
       if (isalpha(c)) {
 	nextTok = parse_name(ps);
+      } else if (isdigit(c)) {
+	nextTok = parse_digits(ps);
       } else if (is_separator(c)) {
 	nextTok = string(1, c);
 	ps++;
       } else if (isspace(c)) {
 	ps++;
 	continue;
+      } else if (comment_start(ps)) {
+	ignore_whitespace(ps);
+	continue;
+      } else if (c == '=') {
+	if (ps.next(1) == '=') {
+	  nextTok = "==";
+	  ps++;
+	}
+	nextTok = "=";
+
+	ps++;
+
+      } else if (is_boolop(c)) {
+	nextTok = string(1, c);
+	ps++;
       } else {
-	cout << "Unsupported char = " << c << endl;
+	
+	cout << "Unsupported char = " << c << " at position " << ps.index() << ", line number = " << ps.lineNumber() << endl;
 	assert(false);
       }
+
+      cout << "Adding token = " << nextTok << endl;
 
       tokens.push_back(nextTok);
 

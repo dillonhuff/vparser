@@ -20,15 +20,37 @@ namespace vparser {
     string test_str = "module(); endmodule";
     vector<string> tokens = tokenize(test_str);
 
-    for (auto& tok : tokens) {
-      cout << tok << endl;
-    }
-
     REQUIRE(tokens.size() == 5);
   }
 
+  TEST_CASE("Comment line") {
+    string test_str = " \n // Hello this is a comment string // asdf\n asdf //";
+    vector<string> tokens = tokenize(test_str);
+
+    REQUIRE(tokens.size() == 1);
+  }
+
+  TEST_CASE("Equals sign") {
+    vector<string> tokens = tokenize("assign a = b;");
+    REQUIRE(tokens[2] == "=");
+    REQUIRE(tokens.size() == 5);
+  }
+
+  TEST_CASE("Multiple comments in a row") {
+    string test_str = " \n // Hello this is a comment string \n// ";
+    vector<string> tokens = tokenize(test_str);
+
+    REQUIRE(tokens.size() == 0);
+  }
+  
   TEST_CASE("Real verilog file") {
-    
+    std::ifstream t("./test/samples/memory_core_unq1.v");
+    std::string str((std::istreambuf_iterator<char>(t)),
+		    std::istreambuf_iterator<char>());
+
+    vector<string> tokens = tokenize(str);
+
+    REQUIRE(tokens.size() > 0);
   }
 
 }
