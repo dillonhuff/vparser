@@ -20,6 +20,10 @@ namespace vparser {
       return code.size() - i > 0;
     }
 
+    int num_chars_left() const {
+      return code.size() - i;
+    }
+    
     int index() const { return i; }
     int lineNumber() const { return lineNo; }
 
@@ -71,6 +75,10 @@ namespace vparser {
   }
 
   bool comment_start(const parse_state& ps) {
+    if (ps.num_chars_left() < 2) {
+      return false;
+    }
+
     char c = ps.next();
     char cd = ps.next(1);
 
@@ -81,6 +89,53 @@ namespace vparser {
     return false;
   }
 
+  bool unlimited_comment_end(const parse_state& ps) {
+    if (ps.num_chars_left() < 2) {
+      return false;
+    }
+
+    char c = ps.next();
+    char cd = ps.next(1);
+
+    if ((c == '*') && (cd == '/')) {
+      return true;
+    }
+
+    return false;
+  }
+  
+  bool unlimited_comment_start(const parse_state& ps) {
+    if (ps.num_chars_left() < 2) {
+      return false;
+    }
+
+    char c = ps.next();
+    char cd = ps.next(1);
+
+    if ((c == '/') && (cd == '*')) {
+      return true;
+    }
+
+    return false;
+  }
+
+  void ignore_unlimited_comment(parse_state& ps) {
+    assert(unlimited_comment_start(ps));
+
+    bool found_end = false;
+    while (ps.chars_left()) {
+      found_end = unlimited_comment_end(ps);
+
+      if (found_end) {
+	ps++;
+	ps++;
+	break;
+      }
+      ps++;
+    }
+
+  }
+  
   void ignore_comment(parse_state& ps) {
     assert(comment_start(ps));
 
@@ -195,6 +250,9 @@ namespace vparser {
 	continue;
       } else if (comment_start(ps)) {
 	ignore_comment(ps);
+	continue;
+      } else if (unlimited_comment_start(ps)) {
+	ignore_unlimited_comment(ps);
 	continue;
       } else if (c == '=') {
 	if (ps.next(1) == '=') {

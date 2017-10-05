@@ -59,4 +59,17 @@ namespace vparser {
     REQUIRE(tokens.size() > 0);
   }
 
+  TEST_CASE("/**/ style comments") {
+    string str = "/* verilator lint_off UNUSED */\ninput [31:0] config_addr;\n/* verilator lint_on UNUSED */\noutput reg [15:0] out;\n";
+
+    auto toks = tokenize(str);
+
+    cout << "TOKENS" << endl;
+    for (auto& t : toks) {
+      cout << t << endl;
+    }
+
+    REQUIRE(toks.size() == 17);
+  }
+
 }
