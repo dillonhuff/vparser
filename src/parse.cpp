@@ -3,6 +3,7 @@
 #include "tokenize.h"
 
 #include <cassert>
+#include <iostream>
 
 using namespace std;
 
@@ -40,7 +41,11 @@ namespace vparser {
   };
 
   void parse_token(const string& str, token_stream& ts) {
-    assert(ts.next() == str);
+    if (ts.next() != str) {
+      cout << "Error: Unexpected token = " << ts.next() << ", expected " << str << endl;
+      assert(false);
+    }
+
     ts++;
   }
 
@@ -53,6 +58,8 @@ namespace vparser {
     vector<string> strs;
 
     if (ts.next(1) == end_delim) {
+      ts++;
+      ts++;
       return {};
     }
 
@@ -80,7 +87,13 @@ namespace vparser {
 
     vector<string> port_names =
       parse_token_list("(", ")", ",", ts);
-    
+
+    // Add statement parsing
+    parse_token(";", ts);
+    parse_token("endmodule", ts);
+
+    assert(!ts.chars_left());
+
     return verilog_module(port_names);
   }
 
