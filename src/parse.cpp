@@ -2,6 +2,8 @@
 
 #include "tokenize.h"
 
+#include <cassert>
+
 using namespace std;
 
 namespace vparser {
@@ -37,12 +39,49 @@ namespace vparser {
     
   };
 
+  void parse_token(const string& str, token_stream& ts) {
+    assert(ts.next() == str);
+    ts++;
+  }
+
+  vector<string> parse_token_list(const string& start_delim,
+				  const string& end_delim,
+				  const string& sep,
+				  token_stream& ts) {
+    assert(ts.next() == start_delim);
+
+    vector<string> strs;
+
+    if (ts.next(1) == end_delim) {
+      return {};
+    }
+
+    do {
+      ts++;
+
+      strs.push_back(ts.next());
+
+      ts++;
+
+    } while (ts.next() == sep);
+
+    assert(ts.next() == end_delim);
+
+    ts++;
+
+    return strs;
+  }
+
   verilog_module parse_module(const string& mod_string) {
     vector<string> tokens = tokenize(mod_string);
 
     token_stream ts(tokens);
+    parse_token("module", ts);
+
+    vector<string> port_names =
+      parse_token_list("(", ")", ",", ts);
     
-    return {};
+    return verilog_module(port_names);
   }
 
 }
