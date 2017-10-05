@@ -48,7 +48,9 @@ namespace vparser {
 
   string parse_name(parse_state& ps) {
     string n = "";
-    while ((isalpha(ps.next()) || (ps.next() == '_')) && ps.chars_left()) {
+    while (ps.chars_left() && (isalpha(ps.next()) ||
+			       (ps.next() == '_') ||
+			       isdigit(ps.next()))) {
       n += ps.next();
       ps++;
     }

@@ -42,7 +42,7 @@ namespace vparser {
 
   void parse_token(const string& str, token_stream& ts) {
     if (ts.next() != str) {
-      cout << "Error: Unexpected token = " << ts.next() << ", expected " << str << endl;
+      cout << "Error: Unexpected token: " << ts.next() << ", expected " << str << endl;
       assert(false);
     }
 
@@ -82,8 +82,16 @@ namespace vparser {
   verilog_module parse_module(const string& mod_string) {
     vector<string> tokens = tokenize(mod_string);
 
+    cout << "TOKENS" << endl;
+    for (auto& t : tokens) {
+      cout << t << endl;
+    }
+
     token_stream ts(tokens);
     parse_token("module", ts);
+
+    string modName = ts.next();
+    ts++;
 
     vector<string> port_names =
       parse_token_list("(", ")", ",", ts);
