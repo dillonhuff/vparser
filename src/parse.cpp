@@ -33,7 +33,7 @@ namespace vparser {
       i--;
       return *this;
     }
-    
+
     string next() const { return toks[i]; }
 
     string next(const int off) const { return toks[i + off]; }
@@ -154,6 +154,8 @@ namespace vparser {
       while (ts.next() != "end") {
 	parse_statement(ts);
       }
+
+      parse_token("end", ts);
       
     }
   }
@@ -170,12 +172,16 @@ namespace vparser {
   }
 
   void parse_case(token_stream& ts) {
+    cout << "Parsing case" << endl;
+
     parse_token("case", ts);
 
     parse_enclosed_tokens("(", ")", ts);
 
+    cout << "Tokens in case = " << endl;
     while (ts.next() != "endcase") {
       while (ts.next() != ";") {
+	cout << ts.next() << endl;
 	ts++;
       }
 
@@ -184,6 +190,8 @@ namespace vparser {
     }
 
     parse_token("endcase", ts);
+
+    cout << "Done parsing case" << endl;
   }
 
   void parse_statement(token_stream& ts) {
