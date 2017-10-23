@@ -79,6 +79,32 @@ namespace vparser {
     return strs;
   }
 
+  void parse_declaration(token_stream& ts) {
+    string ns = ts.next();
+
+    vector<string> declStrs;
+    while (ts.next() != ";") {
+      declStrs.push_back(ts.next());
+      ts++;
+    }
+
+    assert(ts.next() == ";");
+    ts++;
+    
+  }
+
+  void parse_statement(token_stream& ts) {
+    string ns = ts.next();
+
+    if ((ns == "input") || (ns == "output") || (ns == "reg")) {
+      parse_declaration(ts);
+      return;
+    } else {
+      cout << "Unsupported statement start token = " << ns << endl;
+      assert(false);
+    }
+  }
+
   verilog_module parse_module(const string& mod_string) {
     vector<string> tokens = tokenize(mod_string);
 
@@ -98,6 +124,12 @@ namespace vparser {
 
     // Add statement parsing
     parse_token(";", ts);
+
+    // Statement parsing
+    while (ts.next() != "endmodule") {
+      parse_statement(ts);
+    }
+    
     parse_token("endmodule", ts);
 
     assert(!ts.chars_left());
