@@ -169,6 +169,23 @@ namespace vparser {
     parse_token(";", ts);
   }
 
+  void parse_case(token_stream& ts) {
+    parse_token("case", ts);
+
+    parse_enclosed_tokens("(", ")", ts);
+
+    while (ts.next() != "endcase") {
+      while (ts.next() != ";") {
+	ts++;
+      }
+
+      parse_token(";", ts);
+
+    }
+
+    parse_token("endcase", ts);
+  }
+
   void parse_statement(token_stream& ts) {
     string ns = ts.next();
 
@@ -183,7 +200,7 @@ namespace vparser {
     } else if (ns == "endcase") {
       assert(false);
     } else if (ns == "case") {
-      assert(false);
+      parse_case(ts);
     } else if (isalpha(ns[0]) || (ns[0] == '_')) {
       parse_id_statement(ts);
     } else {
