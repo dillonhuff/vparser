@@ -40,6 +40,8 @@ namespace vparser {
     
   };
 
+  void parse_statement(token_stream& ts);
+
   void parse_token(const string& str, token_stream& ts) {
     if (ts.next() != str) {
       cout << "Error: Unexpected token: " << ts.next() << ", expected " << str << endl;
@@ -79,6 +81,44 @@ namespace vparser {
     return strs;
   }
 
+  vector<string>
+  parse_enclosed_tokens(const std::string& start,
+			const std::string& end,
+			token_stream& ts) {
+
+    parse_token(start, ts);
+
+    vector<string> toks;
+
+    while (ts.next() != end) {
+      toks.push_back(ts.next());
+      ts++;
+    }
+
+    assert(ts.next() == end);
+    ts++;
+
+    return toks;
+  }
+
+  void parse_always(token_stream& ts) {
+    string ns = ts.next();
+
+    parse_token("always", ts);
+
+    parse_token("@", ts);
+
+    parse_enclosed_tokens("(", ")", ts);
+
+    parse_token("begin", ts);
+
+    while (ts.next() != "end") {
+      parse_statement(ts);
+    }
+
+    parse_token("end", ts);
+  }
+
   void parse_declaration(token_stream& ts) {
     string ns = ts.next();
 
@@ -93,14 +133,66 @@ namespace vparser {
     
   }
 
+  void parse_if(token_stream& ts) {
+    parse_token("if", ts);
+
+    parse_enclosed_tokens("(", ")", ts);
+
+    parse_token("begin", ts);
+
+    while (ts.next() != "end") {
+      parse_statement(ts);
+    }
+
+    parse_token("end", ts);
+
+    if (ts.next() == "else") {
+      parse_token("else", ts);
+
+      parse_token("begin", ts);
+
+      while (ts.next() != "end") {
+	parse_statement(ts);
+      }
+      
+    }
+  }
+
+  void parse_id_statement(token_stream& ts) {
+    vector<string> strs;
+
+    while (ts.next() != ";") {
+      strs.push_back(ts.next());
+      ts++;
+    }
+
+    parse_token(";", ts);
+  }
+
   void parse_statement(token_stream& ts) {
     string ns = ts.next();
 
     if ((ns == "input") || (ns == "output") || (ns == "reg")) {
       parse_declaration(ts);
-      return;
+    } else if (ns == "always") {
+      parse_always(ts);
+    } else if (ns == "if") {
+      parse_if(ts);
+    } else if (ns == "else") {
+      assert(false);
+    } else if (ns == "endcase") {
+      assert(false);
+    } else if (ns == "case") {
+      assert(false);
+    } else if (isalpha(ns[0]) || (ns[0] == '_')) {
+      parse_id_statement(ts);
     } else {
       cout << "Unsupported statement start token = " << ns << endl;
+      while (ts.chars_left()) {
+	cout << ts.next() << endl;
+	ts++;
+      }
+
       assert(false);
     }
   }
