@@ -242,6 +242,7 @@ namespace vparser {
     // Add statement parsing
     parse_token(";", ts);
 
+    vector<vector<string> > statements;
     // Statement parsing
     while (ts.next() != "endmodule") {
       parse_statement(ts);
@@ -251,7 +252,7 @@ namespace vparser {
 
     assert(!ts.chars_left());
 
-    return verilog_module(port_names);
+    return verilog_module(port_names, statements);
   }
 
 }

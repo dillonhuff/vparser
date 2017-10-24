@@ -35,7 +35,8 @@ namespace vparser {
     verilog_module vm = parse_module(str);
 
     REQUIRE(vm.get_port_names().size() == 16);
+
+    REQUIRE(vm.get_statements().size() == 19);
   }
 
-  
 }
