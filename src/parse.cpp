@@ -40,7 +40,7 @@ namespace vparser {
     
   };
 
-  void parse_statement(token_stream& ts);
+  vector<string> parse_statement(token_stream& ts);
 
   void parse_token(const string& str, token_stream& ts) {
     if (ts.next() != str) {
@@ -101,7 +101,7 @@ namespace vparser {
     return toks;
   }
 
-  void parse_always(token_stream& ts) {
+  vector<string> parse_always(token_stream& ts) {
     string ns = ts.next();
 
     parse_token("always", ts);
@@ -117,9 +117,11 @@ namespace vparser {
     }
 
     parse_token("end", ts);
+
+    return {};
   }
 
-  void parse_declaration(token_stream& ts) {
+  std::vector<string> parse_declaration(token_stream& ts) {
     string ns = ts.next();
 
     vector<string> declStrs;
@@ -130,10 +132,12 @@ namespace vparser {
 
     assert(ts.next() == ";");
     ts++;
+
+    return declStrs;
     
   }
 
-  void parse_if(token_stream& ts) {
+  vector<string> parse_if(token_stream& ts) {
     parse_token("if", ts);
 
     parse_enclosed_tokens("(", ")", ts);
@@ -158,9 +162,11 @@ namespace vparser {
       parse_token("end", ts);
       
     }
+
+    return {};
   }
 
-  void parse_id_statement(token_stream& ts) {
+  vector<string> parse_id_statement(token_stream& ts) {
     vector<string> strs;
 
     while (ts.next() != ";") {
@@ -169,9 +175,11 @@ namespace vparser {
     }
 
     parse_token(";", ts);
+
+    return {};
   }
 
-  void parse_case(token_stream& ts) {
+  vector<string> parse_case(token_stream& ts) {
     cout << "Parsing case" << endl;
 
     parse_token("case", ts);
@@ -192,25 +200,27 @@ namespace vparser {
     parse_token("endcase", ts);
 
     cout << "Done parsing case" << endl;
+
+    return {};
   }
 
-  void parse_statement(token_stream& ts) {
+  std::vector<string> parse_statement(token_stream& ts) {
     string ns = ts.next();
 
     if ((ns == "input") || (ns == "output") || (ns == "reg")) {
-      parse_declaration(ts);
+      return parse_declaration(ts);
     } else if (ns == "always") {
-      parse_always(ts);
+      return parse_always(ts);
     } else if (ns == "if") {
-      parse_if(ts);
+      return parse_if(ts);
     } else if (ns == "else") {
       assert(false);
     } else if (ns == "endcase") {
       assert(false);
     } else if (ns == "case") {
-      parse_case(ts);
+      return parse_case(ts);
     } else if (isalpha(ns[0]) || (ns[0] == '_')) {
-      parse_id_statement(ts);
+      return parse_id_statement(ts);
     } else {
       cout << "Unsupported statement start token = " << ns << endl;
       while (ts.chars_left()) {
@@ -245,7 +255,7 @@ namespace vparser {
     vector<vector<string> > statements;
     // Statement parsing
     while (ts.next() != "endmodule") {
-      parse_statement(ts);
+      statements.push_back(parse_statement(ts));
     }
     
     parse_token("endmodule", ts);
