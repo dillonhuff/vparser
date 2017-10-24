@@ -182,16 +182,13 @@ namespace vparser {
   }
 
   statement* parse_case(token_stream& ts) {
-    cout << "Parsing case" << endl;
 
     parse_token("case", ts);
 
     parse_enclosed_tokens("(", ")", ts);
 
-    cout << "Tokens in case = " << endl;
     while (ts.next() != "endcase") {
       while (ts.next() != ";") {
-	//cout << ts.next() << endl;
 	ts++;
       }
 
@@ -200,8 +197,6 @@ namespace vparser {
     }
 
     parse_token("endcase", ts);
-
-    cout << "Done parsing case" << endl;
 
     return {};
   }
@@ -236,11 +231,6 @@ namespace vparser {
 
   verilog_module parse_module(const string& mod_string) {
     vector<string> tokens = tokenize(mod_string);
-
-    // cout << "TOKENS" << endl;
-    // for (auto& t : tokens) {
-    //   cout << t << endl;
-    // }
 
     token_stream ts(tokens);
     parse_token("module", ts);
