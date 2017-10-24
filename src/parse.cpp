@@ -112,13 +112,15 @@ namespace vparser {
 
     parse_token("begin", ts);
 
+    vector<statement*> stmts;
+
     while (ts.next() != "end") {
-      parse_statement(ts);
+      stmts.push_back(parse_statement(ts));
     }
 
     parse_token("end", ts);
 
-    return new decl_stmt();
+    return new always_stmt(stmts);
   }
 
   statement* parse_declaration(token_stream& ts) {
@@ -163,7 +165,7 @@ namespace vparser {
       
     }
 
-    return {};
+    return new if_stmt();
   }
 
   statement* parse_id_statement(token_stream& ts) {
@@ -189,7 +191,7 @@ namespace vparser {
     cout << "Tokens in case = " << endl;
     while (ts.next() != "endcase") {
       while (ts.next() != ";") {
-	cout << ts.next() << endl;
+	//cout << ts.next() << endl;
 	ts++;
       }
 
@@ -235,10 +237,10 @@ namespace vparser {
   verilog_module parse_module(const string& mod_string) {
     vector<string> tokens = tokenize(mod_string);
 
-    cout << "TOKENS" << endl;
-    for (auto& t : tokens) {
-      cout << t << endl;
-    }
+    // cout << "TOKENS" << endl;
+    // for (auto& t : tokens) {
+    //   cout << t << endl;
+    // }
 
     token_stream ts(tokens);
     parse_token("module", ts);

@@ -34,9 +34,32 @@ namespace vparser {
 
     verilog_module vm = parse_module(str);
 
-    REQUIRE(vm.get_port_names().size() == 16);
+    SECTION("16 ports") {
+      REQUIRE(vm.get_port_names().size() == 16);
+    }
 
-    REQUIRE(vm.get_statements().size() == 19);
+    SECTION("19 statements") {
+      REQUIRE(vm.get_statements().size() == 19);
+    }
+
+    SECTION("First statement is a declaration") {
+      REQUIRE(vm.get_statements()[0]->get_type() == STATEMENT_DECL);
+    }
+
+    SECTION("17th statement is an always block containing one if-else statement") {
+      REQUIRE(vm.get_statements()[17]->get_type() == STATEMENT_ALWAYS);
+
+      always_stmt* astmt =
+        static_cast<always_stmt*>(vm.get_statements()[17]);
+
+      REQUIRE(astmt->get_statement_block().size() == 1);
+
+      auto stmts = astmt->get_statement_block();
+      statement* inner_stmt = stmts[0];
+
+      REQUIRE(inner_stmt->get_type() == STATEMENT_IF);
+    }
+
   }
 
 }
