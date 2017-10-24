@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "statement.h"
+
 namespace vparser {
 
   class verilog_module {
