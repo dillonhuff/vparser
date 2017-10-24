@@ -40,7 +40,7 @@ namespace vparser {
     
   };
 
-  vector<string> parse_statement(token_stream& ts);
+  statement* parse_statement(token_stream& ts);
 
   void parse_token(const string& str, token_stream& ts) {
     if (ts.next() != str) {
@@ -81,7 +81,7 @@ namespace vparser {
     return strs;
   }
 
-  vector<string>
+  statement*
   parse_enclosed_tokens(const std::string& start,
 			const std::string& end,
 			token_stream& ts) {
@@ -98,10 +98,10 @@ namespace vparser {
     assert(ts.next() == end);
     ts++;
 
-    return toks;
+    return new decl_stmt();
   }
 
-  vector<string> parse_always(token_stream& ts) {
+  statement* parse_always(token_stream& ts) {
     string ns = ts.next();
 
     parse_token("always", ts);
@@ -118,10 +118,10 @@ namespace vparser {
 
     parse_token("end", ts);
 
-    return {};
+    return new decl_stmt();
   }
 
-  std::vector<string> parse_declaration(token_stream& ts) {
+  statement* parse_declaration(token_stream& ts) {
     string ns = ts.next();
 
     vector<string> declStrs;
@@ -133,11 +133,11 @@ namespace vparser {
     assert(ts.next() == ";");
     ts++;
 
-    return declStrs;
+    return new decl_stmt(); //declStrs;
     
   }
 
-  vector<string> parse_if(token_stream& ts) {
+  statement* parse_if(token_stream& ts) {
     parse_token("if", ts);
 
     parse_enclosed_tokens("(", ")", ts);
@@ -166,7 +166,7 @@ namespace vparser {
     return {};
   }
 
-  vector<string> parse_id_statement(token_stream& ts) {
+  statement* parse_id_statement(token_stream& ts) {
     vector<string> strs;
 
     while (ts.next() != ";") {
@@ -176,10 +176,10 @@ namespace vparser {
 
     parse_token(";", ts);
 
-    return {};
+    return new decl_stmt(); //{};
   }
 
-  vector<string> parse_case(token_stream& ts) {
+  statement* parse_case(token_stream& ts) {
     cout << "Parsing case" << endl;
 
     parse_token("case", ts);
@@ -204,7 +204,7 @@ namespace vparser {
     return {};
   }
 
-  std::vector<string> parse_statement(token_stream& ts) {
+  statement* parse_statement(token_stream& ts) {
     string ns = ts.next();
 
     if ((ns == "input") || (ns == "output") || (ns == "reg")) {
@@ -252,7 +252,7 @@ namespace vparser {
     // Add statement parsing
     parse_token(";", ts);
 
-    vector<vector<string> > statements;
+    vector<statement*> statements;
     // Statement parsing
     while (ts.next() != "endmodule") {
       statements.push_back(parse_statement(ts));
