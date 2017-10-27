@@ -187,18 +187,35 @@ namespace vparser {
 
     parse_enclosed_tokens("(", ")", ts);
 
+    vector<pair<expression*, statement*> > cases;
+    statement* default_case;
+
+    bool found_default = false;    
+
     while (ts.next() != "endcase") {
+
       while (ts.next() != ";") {
+        if (ts.next() == "default") {
+          found_default = true;
+          default_case = nullptr;
+          assert(ts.next(1) == ":");
+        }
 	ts++;
       }
 
+      if (!found_default) {
+        cases.push_back({nullptr, nullptr});
+      }
       parse_token(";", ts);
 
     }
 
     parse_token("endcase", ts);
 
-    return new case_stmt();
+    if (found_default) {
+      return new case_stmt(cases, default_case);
+    }
+    return new case_stmt(cases);
   }
 
   statement* parse_statement(token_stream& ts) {
