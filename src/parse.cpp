@@ -181,6 +181,32 @@ namespace vparser {
     return new decl_stmt(); //{};
   }
 
+  bool is_integer(const std::string& str) {
+    for (int i = 0; i < str.size(); i++) {
+      if (!isdigit(str[i])) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  expression* parse_expression(token_stream& ts) {
+    string nx = ts.next();
+
+    cout << "nx = " << nx << endl;
+    assert(is_integer(nx));
+
+    //int len = stoi(nx);
+    ts++;
+
+    parse_token("'", ts);
+    //string val = ts.next();
+    ts++;
+    
+    return new expression();
+  }
+
   statement* parse_case(token_stream& ts) {
 
     parse_token("case", ts);
@@ -194,19 +220,30 @@ namespace vparser {
 
     while (ts.next() != "endcase") {
 
-      while (ts.next() != ";") {
-        if (ts.next() == "default") {
-          found_default = true;
-          default_case = nullptr;
-          assert(ts.next(1) == ":");
-        }
-	ts++;
+      expression* expr = nullptr;
+      statement* stmt = nullptr;
+
+      if (ts.next() != "default") {
+        expr = parse_expression(ts);
+      } else {
+        // There can only be one default case
+        assert(!found_default);
+
+        found_default = true;
+        ts++;
       }
 
+      parse_token(":", ts);
+
+      stmt = parse_statement(ts);
+
       if (!found_default) {
-        cases.push_back({nullptr, nullptr});
+        cases.push_back({expr, stmt});
+      } else {
+        default_case = stmt;
       }
-      parse_token(";", ts);
+
+      //parse_token(";", ts);
 
     }
 
@@ -235,6 +272,8 @@ namespace vparser {
       return parse_case(ts);
     } else if (isalpha(ns[0]) || (ns[0] == '_')) {
       return parse_id_statement(ts);
+    } else if (ns == ";") {
+      return new empty_stmt();
     } else {
       cout << "Unsupported statement start token = " << ns << endl;
       while (ts.chars_left()) {

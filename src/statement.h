@@ -11,7 +11,8 @@ namespace vparser {
     STATEMENT_ALWAYS,
     STATEMENT_IF,
     STATEMENT_ASSIGN,
-    STATEMENT_CASE
+    STATEMENT_CASE,
+    STATEMENT_EMPTY
   };
 
   class statement {
@@ -52,6 +53,14 @@ namespace vparser {
 
     statement_type get_type() const {
       return STATEMENT_IF;
+    }
+  };
+  
+  class empty_stmt : public statement {
+  public:
+
+    statement_type get_type() const {
+      return STATEMENT_EMPTY;
     }
   };
 
