@@ -73,7 +73,8 @@ namespace vparser {
       case_stmt* inner_case =
         static_cast<case_stmt*>(inner_always_stmt);
 
-      REQUIRE(inner_case->get_cases().size() == 11);
+      REQUIRE(inner_case->get_cases().size() == 10);
+
     }
 
   }

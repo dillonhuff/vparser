@@ -61,6 +61,8 @@ namespace vparser {
 
     std::vector<std::pair<expression*, statement*>> inner_cases;
 
+    statement* default_stmt;
+
   public:
 
     statement_type get_type() const {
