@@ -58,6 +58,18 @@ namespace vparser {
       statement* inner_stmt = stmts[0];
 
       REQUIRE(inner_stmt->get_type() == STATEMENT_IF);
+
+      REQUIRE(vm.get_statements()[18]->get_type() == STATEMENT_ALWAYS);
+
+      always_stmt* always_case =
+        static_cast<always_stmt*>(vm.get_statements()[18]);
+      auto inner_stmts = always_case->get_statement_block();
+
+      REQUIRE(inner_stmts.size() == 1);
+
+      auto innter_stmt = inner_stmts[0];
+
+      REQUIRE(inner_stmt->get_type() == STATEMENT_CASE);
     }
 
   }
