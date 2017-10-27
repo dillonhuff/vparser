@@ -70,6 +70,10 @@ namespace vparser {
       auto inner_always_stmt = inner_stmts[0];
 
       REQUIRE(inner_always_stmt->get_type() == STATEMENT_CASE);
+      case_stmt* inner_case =
+        static_cast<case_stmt*>(inner_always_stmt);
+
+      REQUIRE(inner_case->get_cases().size() == 11);
     }
 
   }

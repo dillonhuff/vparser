@@ -12,7 +12,8 @@ INCLUDE_DIRECTORIES(./src/)
 
 SET(SRC_FILES ./src/tokenize.cpp
 	      ./src/parse.cpp
-              ./src/statement.cpp)
+              ./src/statement.cpp
+              ./src/expression.cpp)
 
 SET(TEST_FILES ./test/tokenization_tests.cpp
 	       ./test/parse_module_tests.cpp)

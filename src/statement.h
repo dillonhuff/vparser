@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include "expression.h"
+
 namespace vparser {
 
   enum statement_type {
@@ -55,10 +57,19 @@ namespace vparser {
 
 
   class case_stmt : public statement {
+  protected:
+
+    std::vector<std::pair<expression*, statement*>> inner_cases;
+
   public:
 
     statement_type get_type() const {
       return STATEMENT_CASE;
+    }
+
+    std::vector<std::pair<expression*, statement*> >
+    get_cases() const {
+      return inner_cases;
     }
   };
   
