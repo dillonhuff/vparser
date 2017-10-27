@@ -52,5 +52,14 @@ namespace vparser {
       return STATEMENT_IF;
     }
   };
+
+
+  class case_stmt : public statement {
+  public:
+
+    statement_type get_type() const {
+      return STATEMENT_CASE;
+    }
+  };
   
 }

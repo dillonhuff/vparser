@@ -67,9 +67,9 @@ namespace vparser {
 
       REQUIRE(inner_stmts.size() == 1);
 
-      auto innter_stmt = inner_stmts[0];
+      auto inner_always_stmt = inner_stmts[0];
 
-      REQUIRE(inner_stmt->get_type() == STATEMENT_CASE);
+      REQUIRE(inner_always_stmt->get_type() == STATEMENT_CASE);
     }
 
   }

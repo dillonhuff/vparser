@@ -198,7 +198,7 @@ namespace vparser {
 
     parse_token("endcase", ts);
 
-    return {};
+    return new case_stmt();
   }
 
   statement* parse_statement(token_stream& ts) {
