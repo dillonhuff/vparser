@@ -42,21 +42,22 @@ namespace vparser {
   protected:
 
     expression* arg;
-
-    int start, end;
+    expression* start;
+    expression* end;
 
   public:
 
     slice_expr(expression* const arg_,
-               const int start_,
-               const int end_) : arg(arg_), start(start_), end(end_) {}
+               expression* const start_,
+               expression* const end_) :
+      arg(arg_), start(start_), end(end_) {}
 
     virtual expression_type get_type() const {
       return EXPRESSION_SLICE;
     }
 
-    int get_start() const { return start; }
-    int get_end() const { return end; }
+    expression* get_start() const { return start; }
+    expression* get_end() const { return end; }
 
     expression* get_arg() const { return arg; }
 

@@ -275,14 +275,16 @@ namespace vparser {
 
       cout << "Next token in slice = " << ts.next() << endl;
 
-      int start = parse_integer(ts);
+      expression* start = parse_expression(ts);
+      //int start = parse_integer(ts);
       // int start = stoi(ts.next());
       // ts++;
 
       parse_token(":", ts);
 
-      int end = stoi(ts.next());
-      ts++;
+      expression* end = parse_expression(ts);
+      // int end = stoi(ts.next());
+      // ts++;
 
       parse_token("]", ts);
 
