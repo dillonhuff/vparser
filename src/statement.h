@@ -156,11 +156,21 @@ namespace vparser {
   };
 
   class module_instantiation_stmt : public statement {
+    std::string module_type, name;
+
   public:
+
+    module_instantiation_stmt(const std::string& module_type_,
+                              const std::string& name_) :
+      module_type(module_type_),
+      name(name_) {}
 
     statement_type get_type() const {
       return STATEMENT_MODULE_INSTANTIATION;
     }
+
+    std::string get_module_type() const { return module_type; }
+    std::string get_name() const { return name; }
 
     virtual void print(std::ostream& out) const {
       out << " " << std::endl;

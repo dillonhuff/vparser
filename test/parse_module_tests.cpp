@@ -42,6 +42,11 @@ namespace vparser {
 
     REQUIRE(stmt->get_type() == STATEMENT_MODULE_INSTANTIATION);
 
+    module_instantiation_stmt* mst =
+      static_cast<module_instantiation_stmt*>(stmt);
+
+    REQUIRE(mst->get_module_type() == "mem_unq1");
+    REQUIRE(mst->get_name() == "mem_inst0");
   }
 
   TEST_CASE("Assignment statement") {

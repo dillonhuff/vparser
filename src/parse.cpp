@@ -40,6 +40,20 @@ namespace vparser {
     
   };
 
+  bool is_integer(const std::string& str) {
+    for (int i = 0; i < str.size(); i++) {
+      if (!isdigit(str[i])) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  bool is_id(const std::string& str) {
+    return isalpha(str[0]);
+  }
+
   statement* parse_statement(token_stream& ts);
 
   void parse_token(const string& str, token_stream& ts) {
@@ -169,7 +183,17 @@ namespace vparser {
   }
 
   statement* parse_module_instantiation(token_stream& ts) {
-    return new module_instantiation_stmt();
+    string module_type = ts.next();
+    ts++;
+
+    assert(is_id(module_type));
+
+    string module_name = ts.next();
+    ts++;
+
+    assert(is_id(module_name));
+
+    return new module_instantiation_stmt(module_type, module_name);
   }
 
   statement* parse_id_statement(token_stream& ts) {
@@ -183,20 +207,6 @@ namespace vparser {
     parse_token(";", ts);
 
     return new decl_stmt(); //{};
-  }
-
-  bool is_integer(const std::string& str) {
-    for (int i = 0; i < str.size(); i++) {
-      if (!isdigit(str[i])) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  bool is_id(const std::string& str) {
-    return isalpha(str[0]);
   }
 
   int parse_integer(token_stream& ts) {
