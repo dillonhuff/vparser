@@ -237,13 +237,13 @@ namespace vparser {
 
       stmt = parse_statement(ts);
 
+      cout << "Found statement = " << *stmt << endl;
+
       if (!found_default) {
         cases.push_back({expr, stmt});
       } else {
         default_case = stmt;
       }
-
-      //parse_token(";", ts);
 
     }
 
@@ -273,6 +273,7 @@ namespace vparser {
     } else if (isalpha(ns[0]) || (ns[0] == '_')) {
       return parse_id_statement(ts);
     } else if (ns == ";") {
+      ts++;
       return new empty_stmt();
     } else {
       cout << "Unsupported statement start token = " << ns << endl;

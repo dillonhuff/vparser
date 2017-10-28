@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <iostream>
 
 #include "expression.h"
 
@@ -20,6 +21,8 @@ namespace vparser {
 
     virtual statement_type get_type() const = 0;
 
+    virtual void print(std::ostream& out) const = 0;
+
     virtual ~statement() {}
   };
 
@@ -29,8 +32,14 @@ namespace vparser {
     statement_type get_type() const {
       return STATEMENT_DECL;
     }
+
+    virtual void print(std::ostream& out) const {
+      out << "declaration" << std::endl;
+    }
   };
 
+  std::ostream& operator<<(std::ostream& out, const statement& stmt);
+  
   class always_stmt : public statement {
 
     std::vector<statement*> stmts;
@@ -46,6 +55,16 @@ namespace vparser {
     std::vector<statement*> get_statement_block() const {
       return stmts;
     }
+
+    virtual void print(std::ostream& out) const {
+      out << "always () begin" << std::endl;
+      for (auto& stmt : get_statement_block()) {
+        out << *stmt << std::endl;
+      }
+
+      out << std::endl;
+    }
+
   };
 
   class if_stmt : public statement {
@@ -54,6 +73,11 @@ namespace vparser {
     statement_type get_type() const {
       return STATEMENT_IF;
     }
+
+    virtual void print(std::ostream& out) const {
+      out << "if" << std::endl;
+    }
+
   };
   
   class empty_stmt : public statement {
@@ -62,6 +86,11 @@ namespace vparser {
     statement_type get_type() const {
       return STATEMENT_EMPTY;
     }
+
+    virtual void print(std::ostream& out) const {
+      out << " " << std::endl;
+    }
+
   };
 
 
@@ -89,6 +118,13 @@ namespace vparser {
     get_cases() const {
       return inner_cases;
     }
+
+    virtual void print(std::ostream& out) const {
+      out << "case ()" << std::endl;
+    }
+
   };
+
+
   
 }
