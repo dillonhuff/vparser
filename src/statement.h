@@ -155,15 +155,20 @@ namespace vparser {
 
   };
 
+
   class module_instantiation_stmt : public statement {
     std::string module_type, name;
+
+    std::vector<std::pair<std::string, expression*> > port_assignments;
 
   public:
 
     module_instantiation_stmt(const std::string& module_type_,
-                              const std::string& name_) :
+                              const std::string& name_,
+                              const std::vector<std::pair<std::string, expression*> > port_assignments_) :
       module_type(module_type_),
-      name(name_) {}
+      name(name_),
+      port_assignments(port_assignments_) {}
 
     statement_type get_type() const {
       return STATEMENT_MODULE_INSTANTIATION;
@@ -171,6 +176,10 @@ namespace vparser {
 
     std::string get_module_type() const { return module_type; }
     std::string get_name() const { return name; }
+
+    std::vector<std::pair<std::string, expression*> > get_port_assignments() const {
+      return port_assignments;
+    }
 
     virtual void print(std::ostream& out) const {
       out << " " << std::endl;

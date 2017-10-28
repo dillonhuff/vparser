@@ -54,6 +54,7 @@ namespace vparser {
     return isalpha(str[0]);
   }
 
+  expression* parse_expression(token_stream& ts);
   statement* parse_statement(token_stream& ts);
 
   void parse_token(const string& str, token_stream& ts) {
@@ -193,7 +194,37 @@ namespace vparser {
 
     assert(is_id(module_name));
 
-    return new module_instantiation_stmt(module_type, module_name);
+    vector<pair<string, expression*> > port_assignments;
+
+    parse_token("(", ts);
+
+    while (ts.next() != ")") {
+      parse_token(".", ts);
+
+      string port_name = ts.next();
+      ts++;
+
+      parse_token("(", ts);
+
+      expression* expr = parse_expression(ts);
+
+      parse_token(")", ts);
+
+      port_assignments.push_back({port_name, expr});      
+
+      if (ts.next() == ",") {
+        parse_token(",", ts);
+      } else {
+        break;
+      }
+
+    }
+
+    parse_token(")", ts);
+
+    return new module_instantiation_stmt(module_type,
+                                         module_name,
+                                         port_assignments);
   }
 
   statement* parse_id_statement(token_stream& ts) {

@@ -47,6 +47,7 @@ namespace vparser {
 
     REQUIRE(mst->get_module_type() == "mem_unq1");
     REQUIRE(mst->get_name() == "mem_inst0");
+    REQUIRE(mst->get_port_assignments().size() == 6);
   }
 
   TEST_CASE("Assignment statement") {
