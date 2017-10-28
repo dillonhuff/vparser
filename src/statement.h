@@ -13,7 +13,8 @@ namespace vparser {
     STATEMENT_IF,
     STATEMENT_ASSIGN,
     STATEMENT_CASE,
-    STATEMENT_EMPTY
+    STATEMENT_EMPTY,
+    STATEMENT_MODULE_INSTANTIATION
   };
 
   class statement {
@@ -154,5 +155,17 @@ namespace vparser {
 
   };
 
+  class module_instantiation_stmt : public statement {
+  public:
+
+    statement_type get_type() const {
+      return STATEMENT_MODULE_INSTANTIATION;
+    }
+
+    virtual void print(std::ostream& out) const {
+      out << " " << std::endl;
+    }
+
+  };
   
 }

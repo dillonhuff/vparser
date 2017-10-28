@@ -168,6 +168,10 @@ namespace vparser {
     return new if_stmt();
   }
 
+  statement* parse_module_instantiation(token_stream& ts) {
+    return new module_instantiation_stmt();
+  }
+
   statement* parse_id_statement(token_stream& ts) {
     vector<string> strs;
 
@@ -327,6 +331,12 @@ namespace vparser {
     } else if (ns == "case") {
       return parse_case(ts);
     } else if (isalpha(ns[0]) || (ns[0] == '_')) {
+      string nn = ts.next(1);
+
+      if (is_id(nn)) {
+        return parse_module_instantiation(ts);
+      }
+
       return parse_id_statement(ts);
     } else if (ns == ";") {
       ts++;

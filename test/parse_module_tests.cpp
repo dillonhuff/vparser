@@ -35,6 +35,15 @@ namespace vparser {
     REQUIRE(expr->get_type() == EXPRESSION_SLICE);
   }
 
+  TEST_CASE("Module instantiation statement") {
+    string str = "mem_unq1  mem_inst0\n(\n.data_out(mem_data_out0),\n.data_in(mem_data_in0),\n.clk(gclk),\n.cen(int_cen),\n.wen(int_wen),\n.addr(mem_addr[8:0])\n);";
+
+    statement* stmt = parse_statement(str);
+
+    REQUIRE(stmt->get_type() == STATEMENT_MODULE_INSTANTIATION);
+
+  }
+
   TEST_CASE("Assignment statement") {
     string str = "assign gclk = clk;";
     statement* stmt = parse_statement(str);
