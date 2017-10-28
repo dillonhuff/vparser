@@ -140,6 +140,9 @@ namespace vparser {
 
       REQUIRE(inner_case->get_cases().size() == 10);
 
+      statement* case_0 = (inner_case->get_cases()[0]).second;
+
+      REQUIRE(case_0->get_type() == STATEMENT_BLOCKING_ASSIGN);
     }
 
   }

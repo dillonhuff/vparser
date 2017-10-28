@@ -14,7 +14,9 @@ namespace vparser {
     STATEMENT_ASSIGN,
     STATEMENT_CASE,
     STATEMENT_EMPTY,
-    STATEMENT_MODULE_INSTANTIATION
+    STATEMENT_MODULE_INSTANTIATION,
+    STATEMENT_BLOCKING_ASSIGN,
+    STATEMENT_NON_BLOCKING_ASSIGN
   };
 
   class statement {
@@ -155,6 +157,34 @@ namespace vparser {
 
   };
 
+  class blocking_assign_stmt : public statement {
+  protected:
+
+    expression* lhs;
+    expression* rhs;
+
+  public:
+
+    blocking_assign_stmt(expression* const lhs_,
+                expression* const rhs_) : lhs(lhs_), rhs(rhs_) {}
+
+    statement_type get_type() const {
+      return STATEMENT_BLOCKING_ASSIGN;
+    }
+
+    virtual void print(std::ostream& out) const {
+      out << " " << std::endl;
+    }
+
+    expression* get_lhs() const {
+      return lhs;
+    }
+
+    expression* get_rhs() const {
+      return rhs;
+    }
+
+  };
 
   class module_instantiation_stmt : public statement {
     std::string module_type, name;

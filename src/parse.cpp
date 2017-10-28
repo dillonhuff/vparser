@@ -279,18 +279,11 @@ namespace vparser {
     if (nx[0] == '[') {
       parse_token("[", ts);
 
-      cout << "Next token in slice = " << ts.next() << endl;
-
       expression* start = parse_expression(ts);
-      //int start = parse_integer(ts);
-      // int start = stoi(ts.next());
-      // ts++;
 
       parse_token(":", ts);
 
       expression* end = parse_expression(ts);
-      // int end = stoi(ts.next());
-      // ts++;
 
       parse_token("]", ts);
 
@@ -362,6 +355,20 @@ namespace vparser {
     return new assign_stmt(lhs, rhs);
   }
 
+  statement* parse_blocking_assign(token_stream& ts) {
+    //string s = ts.next();
+
+    expression* lhs = parse_expression(ts);
+
+    parse_token("=", ts);
+
+    expression* rhs = parse_expression(ts);
+
+    parse_token(";", ts);
+
+    return new blocking_assign_stmt(lhs, rhs);
+  }
+
   statement* parse_statement(token_stream& ts) {
     string ns = ts.next();
 
@@ -384,6 +391,8 @@ namespace vparser {
 
       if (is_id(nn)) {
         return parse_module_instantiation(ts);
+      } else if (nn == "=") {
+        return parse_blocking_assign(ts);
       }
 
       return parse_id_statement(ts);
@@ -421,7 +430,6 @@ namespace vparser {
     while (ts.next() != "endmodule") {
       statements.push_back(parse_statement(ts));
     }
-    
     parse_token("endmodule", ts);
 
     assert(!ts.chars_left());
