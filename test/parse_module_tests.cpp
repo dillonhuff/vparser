@@ -1,6 +1,7 @@
 #include "catch.hpp"
 
 #include "parse.h"
+#include "tokenize.h"
 
 #include <fstream>
 #include <iostream>
@@ -25,6 +26,39 @@ namespace vparser {
 
     REQUIRE(vm.get_port_names().size() == 3);
     
+  }
+
+  TEST_CASE("Assignment statement") {
+    string str = "assign gclk = clk;";
+    statement* stmt = parse_statement(str);
+
+    SECTION("Parsed statement is assignment") {
+      REQUIRE(stmt->get_type() == STATEMENT_ASSIGN);
+
+      assign_stmt* astmt =
+        static_cast<assign_stmt*>(stmt);
+
+      SECTION("LHS is an identifier 'gclk'") {
+        expression* expr = astmt->get_lhs();
+
+        REQUIRE(expr->get_type() == EXPRESSION_ID);
+
+        id_expr* eid = static_cast<id_expr*>(expr);
+
+        REQUIRE(eid->get_name() == "gclk");
+      }
+
+      SECTION("RHS is an identifier 'clk'") {
+        expression* expr = astmt->get_rhs();
+
+        REQUIRE(expr->get_type() == EXPRESSION_ID);
+
+        id_expr* eid = static_cast<id_expr*>(expr);
+
+        REQUIRE(eid->get_name() == "clk");
+      }
+
+    }
   }
 
   TEST_CASE("Reading a real file with multiple statements") {

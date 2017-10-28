@@ -194,17 +194,22 @@ namespace vparser {
   expression* parse_expression(token_stream& ts) {
     string nx = ts.next();
 
-    cout << "nx = " << nx << endl;
-    assert(is_integer(nx));
+    //cout << "nx = " << nx << endl;
+    if (is_integer(nx)) {
 
-    //int len = stoi(nx);
-    ts++;
+      //int len = stoi(nx);
+      ts++;
 
-    parse_token("'", ts);
-    //string val = ts.next();
-    ts++;
+      parse_token("'", ts);
+      //string val = ts.next();
+      ts++;
     
-    return new expression();
+      return new num_expr();
+    } else {
+      ts++;
+      return new id_expr(nx);
+
+    }
   }
 
   statement* parse_case(token_stream& ts) {
@@ -237,7 +242,7 @@ namespace vparser {
 
       stmt = parse_statement(ts);
 
-      cout << "Found statement = " << *stmt << endl;
+      //cout << "Found statement = " << *stmt << endl;
 
       if (!found_default) {
         cases.push_back({expr, stmt});
@@ -255,6 +260,20 @@ namespace vparser {
     return new case_stmt(cases);
   }
 
+  statement* parse_assign(token_stream& ts) {
+    parse_token("assign", ts);
+
+    expression* lhs = parse_expression(ts);
+
+    parse_token("=", ts);
+
+    expression* rhs = parse_expression(ts);
+
+    parse_token(";", ts);
+
+    return new assign_stmt(lhs, rhs);
+  }
+
   statement* parse_statement(token_stream& ts) {
     string ns = ts.next();
 
@@ -264,6 +283,8 @@ namespace vparser {
       return parse_always(ts);
     } else if (ns == "if") {
       return parse_if(ts);
+    } else if (ns == "assign") {
+      return parse_assign(ts);
     } else if (ns == "else") {
       assert(false);
     } else if (ns == "endcase") {
@@ -312,6 +333,11 @@ namespace vparser {
     assert(!ts.chars_left());
 
     return verilog_module(port_names, statements);
+  }
+
+  statement* parse_statement(const std::string& stmt_string) {
+    token_stream ts(tokenize(stmt_string));
+    return parse_statement(ts);
   }
 
 }

@@ -39,4 +39,6 @@ namespace vparser {
 
   verilog_module parse_module(const std::string& mod_string);
 
+  statement* parse_statement(const std::string& stmt_string);
+
 }

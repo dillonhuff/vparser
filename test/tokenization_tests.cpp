@@ -64,11 +64,6 @@ namespace vparser {
 
     auto toks = tokenize(str);
 
-    cout << "TOKENS" << endl;
-    for (auto& t : toks) {
-      cout << t << endl;
-    }
-
     REQUIRE(toks.size() == 17);
   }
 

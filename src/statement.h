@@ -125,6 +125,34 @@ namespace vparser {
 
   };
 
+  class assign_stmt : public statement {
+  protected:
+
+    expression* lhs;
+    expression* rhs;
+
+  public:
+
+    assign_stmt(expression* const lhs_,
+                expression* const rhs_) : lhs(lhs_), rhs(rhs_) {}
+
+    statement_type get_type() const {
+      return STATEMENT_ASSIGN;
+    }
+
+    virtual void print(std::ostream& out) const {
+      out << " " << std::endl;
+    }
+
+    expression* get_lhs() const {
+      return lhs;
+    }
+
+    expression* get_rhs() const {
+      return rhs;
+    }
+
+  };
 
   
 }
