@@ -191,10 +191,16 @@ namespace vparser {
     return true;
   }
 
+  bool is_id(const std::string& str) {
+    return isalpha(str[0]);
+  }
+
   expression* parse_expression(token_stream& ts) {
     string nx = ts.next();
 
     //cout << "nx = " << nx << endl;
+
+    expression* expr = nullptr;
     if (is_integer(nx)) {
 
       //int len = stoi(nx);
@@ -203,13 +209,33 @@ namespace vparser {
       parse_token("'", ts);
       //string val = ts.next();
       ts++;
-    
-      return new num_expr();
-    } else {
-      ts++;
-      return new id_expr(nx);
 
+      expr = new num_expr();
+    } else if (is_id(nx)) {
+      ts++;
+      expr = new id_expr(nx);
     }
+
+    nx = ts.next();
+    if (nx[0] == '[') {
+      parse_token("[", ts);
+
+      cout << "Next token in slice = " << ts.next() << endl;
+
+      int start = stoi(ts.next());
+      ts++;
+
+      parse_token(":", ts);
+
+      int end = stoi(ts.next());
+      ts++;
+
+      parse_token("]", ts);
+
+      return new slice_expr(expr, start, end);
+    }
+
+    return expr;
   }
 
   statement* parse_case(token_stream& ts) {
@@ -340,4 +366,9 @@ namespace vparser {
     return parse_statement(ts);
   }
 
+  expression* parse_expression(const std::string& stmt_string) {
+    token_stream ts(tokenize(stmt_string));
+    return parse_expression(ts);
+  }
+  
 }

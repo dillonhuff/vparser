@@ -28,6 +28,13 @@ namespace vparser {
     
   }
 
+  TEST_CASE("Parse slice of variable") {
+    string str = "config_mem[18:16]";
+    expression* expr = parse_expression(str);
+
+    REQUIRE(expr->get_type() == EXPRESSION_SLICE);
+  }
+
   TEST_CASE("Assignment statement") {
     string str = "assign gclk = clk;";
     statement* stmt = parse_statement(str);
