@@ -256,14 +256,20 @@ namespace vparser {
     expression* expr = nullptr;
     if (is_integer(nx)) {
 
-      //int len = stoi(nx);
-      ts++;
+      if (ts.next(1) == "'") {
+        //int len = stoi(nx);
+        ts++;
 
-      parse_token("'", ts);
-      //string val = ts.next();
-      ts++;
+        parse_token("'", ts);
+        //string val = ts.next();
+        ts++;
 
-      expr = new num_expr();
+        expr = new num_expr();
+      } else {
+        parse_integer(ts);
+
+        expr = new num_expr();
+      }
     } else if (is_id(nx)) {
       ts++;
       expr = new id_expr(nx);
