@@ -195,6 +195,14 @@ namespace vparser {
     return isalpha(str[0]);
   }
 
+  int parse_integer(token_stream& ts) {
+    assert(is_integer(ts.next()));
+
+    int val = stoi(ts.next());
+    ts++;
+    return val;
+  }
+
   expression* parse_expression(token_stream& ts) {
     string nx = ts.next();
 
@@ -222,8 +230,9 @@ namespace vparser {
 
       cout << "Next token in slice = " << ts.next() << endl;
 
-      int start = stoi(ts.next());
-      ts++;
+      int start = parse_integer(ts);
+      // int start = stoi(ts.next());
+      // ts++;
 
       parse_token(":", ts);
 
