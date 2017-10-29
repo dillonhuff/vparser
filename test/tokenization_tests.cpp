@@ -67,6 +67,13 @@ namespace vparser {
     REQUIRE(toks.size() == 17);
   }
 
+  TEST_CASE("<= assign") {
+    string str = "config_cb <= 32'd0;";
+    auto toks = tokenize(str);
+
+    REQUIRE(toks[1] == "<=");
+  }
+
   TEST_CASE("Module with number in name") {
     string str = "module cb_unq1() endmodule";
     auto toks = tokenize(str);

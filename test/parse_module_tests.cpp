@@ -110,6 +110,19 @@ namespace vparser {
       REQUIRE(vm.get_statements()[0]->get_type() == STATEMENT_DECL);
     }
 
+    SECTION("Non blocking assignment") {
+      string str = "config_cb <= 32'd0;";
+      statement* stmt = parse_statement(str);
+
+      cout << "Got statement from tokens:" << endl;
+      for (auto& t : tokenize(str)) {
+        cout << t << endl;
+      }
+      cout << "----" << endl;
+
+      REQUIRE(stmt->get_type() == STATEMENT_NON_BLOCKING_ASSIGN);
+    }
+
     SECTION("17th statement is an always block containing one if-else statement") {
       REQUIRE(vm.get_statements()[17]->get_type() == STATEMENT_ALWAYS);
 

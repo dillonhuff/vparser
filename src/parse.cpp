@@ -127,16 +127,6 @@ namespace vparser {
 
     statement* stmt = parse_statement(ts);
 
-    // parse_token("begin", ts);
-
-    // vector<statement*> stmts;
-
-    // while (ts.next() != "end") {
-    //   stmts.push_back(parse_statement(ts));
-    // }
-
-    // parse_token("end", ts);
-
     return new always_stmt(stmt);
   }
 
@@ -166,19 +156,6 @@ namespace vparser {
     }
 
     parse_token("end", ts);
-
-    // if (ts.next() == "else") {
-    //   parse_token("else", ts);
-
-    //   parse_token("begin", ts);
-
-    //   while (ts.next() != "end") {
-    //     parse_statement(ts);
-    //   }
-
-    //   parse_token("end", ts);
-      
-    // }
 
     return new begin_stmt(stmts);
   }
@@ -372,8 +349,6 @@ namespace vparser {
   }
 
   statement* parse_blocking_assign(token_stream& ts) {
-    //string s = ts.next();
-
     expression* lhs = parse_expression(ts);
 
     parse_token("=", ts);
@@ -385,6 +360,18 @@ namespace vparser {
     return new blocking_assign_stmt(lhs, rhs);
   }
 
+  statement* parse_non_blocking_assign(token_stream& ts) {
+    expression* lhs = parse_expression(ts);
+
+    parse_token("<=", ts);
+
+    expression* rhs = parse_expression(ts);
+
+    parse_token(";", ts);
+
+    return new non_blocking_assign_stmt(lhs, rhs);
+  }
+  
   statement* parse_statement(token_stream& ts) {
     string ns = ts.next();
 
@@ -407,10 +394,14 @@ namespace vparser {
     } else if (isalpha(ns[0]) || (ns[0] == '_')) {
       string nn = ts.next(1);
 
+      cout << "nn = " << nn << endl;
+
       if (is_id(nn)) {
         return parse_module_instantiation(ts);
       } else if (nn == "=") {
         return parse_blocking_assign(ts);
+      } else if (nn == "<=") {
+        return parse_non_blocking_assign(ts);
       }
 
       return parse_id_statement(ts);
