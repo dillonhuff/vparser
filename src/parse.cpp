@@ -403,6 +403,7 @@ namespace vparser {
       }
 
       return parse_id_statement(ts);
+
     } else if (ns == ";") {
       ts++;
       return new empty_stmt();
