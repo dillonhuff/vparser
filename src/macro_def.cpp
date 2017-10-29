@@ -23,21 +23,24 @@ namespace vparser {
     return lines;
   }
 
-  std::vector<macro_def>
-  parse_macro_defs(const std::string& verilog_text) {
-
+  preprocessed_verilog
+  preprocess_code(const std::string& verilog_text) {
     vector<string> lines = split_lines(verilog_text);
 
     vector<macro_def> defs;
+
+    string prep_text = "";
 
     for (auto& line : lines) {
       if (line[0] == '`') {
         cout << "MACRO: " << line << endl;
         defs.push_back(macro_def());
+      } else {
+        prep_text += line + "\n";
       }
     }
 
-    return defs;
+    return {defs, prep_text};
   }
 
 }

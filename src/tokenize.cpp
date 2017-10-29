@@ -62,7 +62,7 @@ namespace vparser {
       (c == ')') ||
       (c == '{') ||
       (c == '}') ||
-      (c == '"') ||
+      //      (c == '"') ||
       (c == '.') ||
       (c == '[') ||
       (c == ']') ||
@@ -166,6 +166,23 @@ namespace vparser {
     return (c == '&') || (c == '|') || (c == '-') || (c == '+') ||
       (c == '~') ||
       (c == '*');
+  }
+
+  string parse_string_literal(parse_state& ps) {
+    assert(ps.next() == '"');
+
+    ps++;
+
+    string tok = "";
+    while (ps.next() != '"') {
+      tok += ps.next();
+      ps++;
+    }
+
+    assert(ps.next() == '"');
+    ps++;
+
+    return tok;
   }
 
   string parse_gt(parse_state& ps) {
@@ -273,6 +290,9 @@ namespace vparser {
 	nextTok = "!=";
 	ps++;
 	ps++;
+      } else if (c == '"') {
+        cout << "Parsing string" << endl;
+        nextTok = parse_string_literal(ps);
       } else {
 	
 	cout << "Unsupported char = " << c << " at position " << ps.index() << ", line number = " << ps.lineNumber() << endl;

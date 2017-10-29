@@ -8,6 +8,12 @@ namespace vparser {
   class macro_def {
   };
 
-  std::vector<macro_def> parse_macro_defs(const std::string& verilog_text);
+  class preprocessed_verilog {
+  public:
+    std::vector<macro_def> defs;
+    std::string text;
+  };
+
+  preprocessed_verilog preprocess_code(const std::string& verilog_text);
 
 }

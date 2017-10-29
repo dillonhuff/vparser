@@ -81,4 +81,10 @@ namespace vparser {
     REQUIRE(toks[1] == "cb_unq1");
   }
 
+  TEST_CASE("Parse text with string") {
+    string str = "xassert(in == out, \"No way man!!!\")";
+
+    REQUIRE(tokenize(str).size() == 8);
+  }
+
 }

@@ -90,6 +90,23 @@ namespace vparser {
     }
   }
 
+  TEST_CASE("Preprocessing and then parsing") {
+    string str = "`define xassert(condition, message) if(condition) begin $display(message); $finish(1); end\nmodule test_mod();\n `xassert(in == out, \"No way man!!!\")\nendmodule";
+
+    preprocessed_verilog prep =
+      preprocess_code(str);
+
+    vector<macro_def> macro_defs = prep.defs;
+
+    REQUIRE(macro_defs.size() == 1);
+
+    cout << "prep text = " << endl;
+    cout << prep.text << endl;
+    
+    verilog_module vm = parse_module(prep.text);
+    
+  }
+
   TEST_CASE("Reading a real file with multiple statements") {
     std::ifstream t("./test/samples/cb_unq1.v");
     std::string str((std::istreambuf_iterator<char>(t)),
@@ -168,11 +185,16 @@ namespace vparser {
     std::string str((std::istreambuf_iterator<char>(t)),
 		    std::istreambuf_iterator<char>());
 
-    vector<macro_def> macro_defs =
-      parse_macro_defs(str);
+    preprocessed_verilog prep =
+      preprocess_code(str);
+
+    vector<macro_def> macro_defs = prep.defs;
 
     REQUIRE(macro_defs.size() == 6);
 
-    verilog_module vm = parse_module(str);
+    cout << "prep text = " << endl;
+    cout << prep.text << endl;
+    
+    verilog_module vm = parse_module(prep.text);
   }
 }
