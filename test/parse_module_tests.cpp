@@ -1,5 +1,6 @@
 #include "catch.hpp"
 
+#include "macro_def.h"
 #include "parse.h"
 #include "tokenize.h"
 
@@ -166,6 +167,11 @@ namespace vparser {
     std::ifstream t("./test/samples/memory_core_unq1.v");
     std::string str((std::istreambuf_iterator<char>(t)),
 		    std::istreambuf_iterator<char>());
+
+    vector<macro_def> macro_defs =
+      parse_macro_defs(str);
+
+    REQUIRE(macro_defs.size() == 6);
 
     verilog_module vm = parse_module(str);
   }
