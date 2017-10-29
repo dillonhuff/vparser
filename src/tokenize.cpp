@@ -150,26 +150,6 @@ namespace vparser {
     while (ps.chars_left() && isspace(ps.next())) {
       ps++;
     }
-
-    // if (!ps.chars_left()) {
-    //   return;
-    // }
-
-    // char c = ps.next();
-    // char cd = ps.next(1);
-
-    // if ((c == '/') && (cd == '/')) {
-    //   cout << "Parsing comment" << endl;
-    //   ps++;
-    //   ps++;
-    //   while (ps.next() != '\n') {
-    // 	ps++;
-    //   }
-    // }
-
-    // while (ps.chars_left() && isspace(ps.next())) {
-    //   ps++;
-    // }
     
   }
 
@@ -205,8 +185,6 @@ namespace vparser {
 
   string parse_lt(parse_state& ps) {
     assert(ps.next() == '<');
-
-    cout << "parse_lt" << endl;
 
     if (ps.next(1) == '=') {
       ps++;

@@ -394,8 +394,6 @@ namespace vparser {
     } else if (isalpha(ns[0]) || (ns[0] == '_')) {
       string nn = ts.next(1);
 
-      cout << "nn = " << nn << endl;
-
       if (is_id(nn)) {
         return parse_module_instantiation(ts);
       } else if (nn == "=") {

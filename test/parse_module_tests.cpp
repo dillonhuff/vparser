@@ -114,11 +114,11 @@ namespace vparser {
       string str = "config_cb <= 32'd0;";
       statement* stmt = parse_statement(str);
 
-      cout << "Got statement from tokens:" << endl;
-      for (auto& t : tokenize(str)) {
-        cout << t << endl;
-      }
-      cout << "----" << endl;
+      // cout << "Got statement from tokens:" << endl;
+      // for (auto& t : tokenize(str)) {
+      //   cout << t << endl;
+      // }
+      // cout << "----" << endl;
 
       REQUIRE(stmt->get_type() == STATEMENT_NON_BLOCKING_ASSIGN);
     }
