@@ -114,12 +114,6 @@ namespace vparser {
       string str = "config_cb <= 32'd0;";
       statement* stmt = parse_statement(str);
 
-      // cout << "Got statement from tokens:" << endl;
-      // for (auto& t : tokenize(str)) {
-      //   cout << t << endl;
-      // }
-      // cout << "----" << endl;
-
       REQUIRE(stmt->get_type() == STATEMENT_NON_BLOCKING_ASSIGN);
     }
 
@@ -139,12 +133,6 @@ namespace vparser {
 
       REQUIRE(inner_stmt->get_type() == STATEMENT_IF);
 
-      // if_stmt* inner_if =
-      //   static_cast<if_stmt*>(inner_stmt);
-
-      // statement* if_value =
-      //   inner_if->get_if_statement
-
       // 18th statement
 
       REQUIRE(vm.get_statements()[18]->get_type() == STATEMENT_ALWAYS);
@@ -152,7 +140,7 @@ namespace vparser {
       always_stmt* always_case =
         static_cast<always_stmt*>(vm.get_statements()[18]);
       auto inner_stmts =
-        static_cast<begin_stmt*>(always_case->get_statement())->get_statements(); //_block();
+        static_cast<begin_stmt*>(always_case->get_statement())->get_statements();
 
       REQUIRE(inner_stmts.size() == 1);
 
