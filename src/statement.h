@@ -10,6 +10,7 @@ namespace vparser {
   enum statement_type {
     STATEMENT_DECL,
     STATEMENT_ALWAYS,
+    STATEMENT_BEGIN,
     STATEMENT_IF,
     STATEMENT_ASSIGN,
     STATEMENT_CASE,
@@ -71,8 +72,24 @@ namespace vparser {
   };
 
   class if_stmt : public statement {
+
+  protected:
+
+    statement* if_exe;
+    statement* else_exe;
+
   public:
 
+    if_stmt(statement* const if_exe_) :
+      if_exe(if_exe_), else_exe(nullptr) {}
+
+    if_stmt(statement* const if_exe_,
+            statement* const else_exe_) :
+      if_exe(if_exe_), else_exe(else_exe_) {}
+
+    statement* get_if_exe() { return if_exe; }
+    statement* get_else_exe() { return else_exe; }
+    
     statement_type get_type() const {
       return STATEMENT_IF;
     }
@@ -96,6 +113,29 @@ namespace vparser {
 
   };
 
+  class begin_stmt : public statement {
+  protected:
+
+    std::vector<statement*> stmts;
+
+  public:
+
+    begin_stmt(const std::vector<statement*>& stmts_) :
+      stmts(stmts_) {}
+
+    std::vector<statement*> get_stmts() const {
+      return stmts;
+    }
+
+    statement_type get_type() const {
+      return STATEMENT_BEGIN;
+    }
+
+    virtual void print(std::ostream& out) const {
+      out << " " << std::endl;
+    }
+
+  };
 
   class case_stmt : public statement {
   protected:

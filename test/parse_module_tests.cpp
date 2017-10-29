@@ -123,6 +123,14 @@ namespace vparser {
 
       REQUIRE(inner_stmt->get_type() == STATEMENT_IF);
 
+      // if_stmt* inner_if =
+      //   static_cast<if_stmt*>(inner_stmt);
+
+      // statement* if_value =
+      //   inner_if->get_if_statement
+
+      // 18th statement
+
       REQUIRE(vm.get_statements()[18]->get_type() == STATEMENT_ALWAYS);
 
       always_stmt* always_case =

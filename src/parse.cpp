@@ -154,33 +154,47 @@ namespace vparser {
     
   }
 
+  statement* parse_stmt_block(token_stream& ts) {
+    parse_token("begin", ts);
+
+    vector<statement*> stmts;
+
+    while (ts.next() != "end") {
+      stmts.push_back(parse_statement(ts));
+    }
+
+    parse_token("end", ts);
+
+    // if (ts.next() == "else") {
+    //   parse_token("else", ts);
+
+    //   parse_token("begin", ts);
+
+    //   while (ts.next() != "end") {
+    //     parse_statement(ts);
+    //   }
+
+    //   parse_token("end", ts);
+      
+    // }
+
+    return new begin_stmt(stmts);
+  }
+
   statement* parse_if(token_stream& ts) {
     parse_token("if", ts);
 
     parse_enclosed_tokens("(", ")", ts);
 
-    parse_token("begin", ts);
-
-    while (ts.next() != "end") {
-      parse_statement(ts);
-    }
-
-    parse_token("end", ts);
+    statement* if_s = parse_statement(ts); //nullptr;
+    statement* ex_s = nullptr;
 
     if (ts.next() == "else") {
-      parse_token("else", ts);
-
-      parse_token("begin", ts);
-
-      while (ts.next() != "end") {
-	parse_statement(ts);
-      }
-
-      parse_token("end", ts);
-      
+      ts++;
+      ex_s = parse_statement(ts);
     }
 
-    return new if_stmt();
+    return new if_stmt(if_s, ex_s);
   }
 
   statement* parse_module_instantiation(token_stream& ts) {
@@ -380,6 +394,8 @@ namespace vparser {
       return parse_if(ts);
     } else if (ns == "assign") {
       return parse_assign(ts);
+    } else if (ns == "begin") {
+      return parse_stmt_block(ts);
     } else if (ns == "else") {
       assert(false);
     } else if (ns == "endcase") {
