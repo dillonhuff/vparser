@@ -116,9 +116,12 @@ namespace vparser {
       always_stmt* astmt =
         static_cast<always_stmt*>(vm.get_statements()[17]);
 
-      REQUIRE(astmt->get_statement_block().size() == 1);
+      begin_stmt* bstmt =
+        static_cast<begin_stmt*>(astmt->get_statement());
 
-      auto stmts = astmt->get_statement_block();
+      REQUIRE(bstmt->get_statements().size() == 1);
+
+      auto stmts = bstmt->get_statements();
       statement* inner_stmt = stmts[0];
 
       REQUIRE(inner_stmt->get_type() == STATEMENT_IF);
@@ -135,7 +138,8 @@ namespace vparser {
 
       always_stmt* always_case =
         static_cast<always_stmt*>(vm.get_statements()[18]);
-      auto inner_stmts = always_case->get_statement_block();
+      auto inner_stmts =
+        static_cast<begin_stmt*>(always_case->get_statement())->get_statements(); //_block();
 
       REQUIRE(inner_stmts.size() == 1);
 

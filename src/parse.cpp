@@ -125,17 +125,19 @@ namespace vparser {
 
     parse_enclosed_tokens("(", ")", ts);
 
-    parse_token("begin", ts);
+    statement* stmt = parse_statement(ts);
 
-    vector<statement*> stmts;
+    // parse_token("begin", ts);
 
-    while (ts.next() != "end") {
-      stmts.push_back(parse_statement(ts));
-    }
+    // vector<statement*> stmts;
 
-    parse_token("end", ts);
+    // while (ts.next() != "end") {
+    //   stmts.push_back(parse_statement(ts));
+    // }
 
-    return new always_stmt(stmts);
+    // parse_token("end", ts);
+
+    return new always_stmt(stmt);
   }
 
   statement* parse_declaration(token_stream& ts) {

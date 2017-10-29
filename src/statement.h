@@ -46,25 +46,28 @@ namespace vparser {
   
   class always_stmt : public statement {
 
-    std::vector<statement*> stmts;
+    //std::vector<statement*> stmts;
+
+    statement* stmt;
 
   public:
 
-    always_stmt(const std::vector<statement*>& stmts_) : stmts(stmts_) {}
+    //always_stmt(const std::vector<statement*>& stmts_) : stmts(stmts_) {}
+    always_stmt(statement* const stmt_) : stmt(stmt_) {}
 
     statement_type get_type() const {
       return STATEMENT_ALWAYS;
     }
 
-    std::vector<statement*> get_statement_block() const {
-      return stmts;
+    statement* get_statement() const {
+      return stmt;
     }
 
     virtual void print(std::ostream& out) const {
       out << "always () begin" << std::endl;
-      for (auto& stmt : get_statement_block()) {
-        out << *stmt << std::endl;
-      }
+      // for (auto& stmt : get_statement_block()) {
+      //   out << *stmt << std::endl;
+      // }
 
       out << std::endl;
     }
@@ -123,7 +126,7 @@ namespace vparser {
     begin_stmt(const std::vector<statement*>& stmts_) :
       stmts(stmts_) {}
 
-    std::vector<statement*> get_stmts() const {
+    std::vector<statement*> get_statements() const {
       return stmts;
     }
 
