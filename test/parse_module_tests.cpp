@@ -14,7 +14,6 @@ namespace vparser {
     verilog_module vm = parse_module("module m(); endmodule");
 
     REQUIRE(vm.get_port_names().size() == 0);
-    
   }
 
   TEST_CASE("Empty module with 3 parameters") {
@@ -25,7 +24,6 @@ namespace vparser {
     }
 
     REQUIRE(vm.get_port_names().size() == 3);
-    
   }
 
   TEST_CASE("Parse slice of variable") {
@@ -117,6 +115,10 @@ namespace vparser {
       REQUIRE(stmt->get_type() == STATEMENT_NON_BLOCKING_ASSIGN);
     }
 
+    SECTION("Parse a define macro") {
+      string str = "`define xassert(condition, message) if(condition) begin $display(message); $finish(1); end";
+    }
+
     SECTION("17th statement is an always block containing one if-else statement") {
       REQUIRE(vm.get_statements()[17]->get_type() == STATEMENT_ALWAYS);
 
@@ -160,4 +162,11 @@ namespace vparser {
 
   }
 
+  TEST_CASE("Reading a larger real file with multiple statements") {
+    std::ifstream t("./test/samples/memory_core_unq1.v");
+    std::string str((std::istreambuf_iterator<char>(t)),
+		    std::istreambuf_iterator<char>());
+
+    verilog_module vm = parse_module(str);
+  }
 }

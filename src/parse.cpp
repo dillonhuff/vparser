@@ -454,5 +454,5 @@ namespace vparser {
     token_stream ts(tokenize(stmt_string));
     return parse_expression(ts);
   }
-  
+
 }
