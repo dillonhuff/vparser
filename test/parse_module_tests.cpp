@@ -100,8 +100,13 @@ namespace vparser {
 
     REQUIRE(macro_defs.size() == 1);
 
+    
     cout << "prep text = " << endl;
     cout << prep.text << endl;
+    
+    string prep_str = "module test_mod();\n if(in == out) begin $disply(\"No way man!!!\"); $finish(1); end\nendmodule";
+
+    REQUIRE(prep.text == prep_str);
     
     verilog_module vm = parse_module(prep.text);
     

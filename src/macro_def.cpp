@@ -1,5 +1,7 @@
 #include "macro_def.h"
 
+#include "tokenize.h"
+
 #include <iostream>
 #include <sstream>
 
@@ -23,6 +25,19 @@ namespace vparser {
     return lines;
   }
 
+  std::string preprocess_text(const std::string& text,
+                              const std::vector<macro_def>& defs) {
+    vector<string> tokens = tokenize(text);
+
+    cout << "TEXT" << endl;
+    for (auto& t : tokens) {
+      cout << t << endl;
+    }
+    cout << "DONE." << endl;
+
+    return text;
+  }
+
   preprocessed_verilog
   preprocess_code(const std::string& verilog_text) {
     vector<string> lines = split_lines(verilog_text);
@@ -40,7 +55,10 @@ namespace vparser {
       }
     }
 
-    return {defs, prep_text};
+    string tr_prep_text =
+      preprocess_text(prep_text, defs);
+
+    return {defs, tr_prep_text};
   }
 
 }

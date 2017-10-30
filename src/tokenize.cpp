@@ -219,21 +219,6 @@ namespace vparser {
 
     return "<";
 
-    // if ((ps.next(1) == '=') || (ps.next(1) == '<')) {
-
-    //   string next_tok = "";
-    //   next_tok += ps.next();
-    //   next_tok += ps.next(1);
-    //   ps++;
-    //   ps++;
-
-    //   return next_tok;
-    // }
-
-    // string next_tok(1, ps.next());
-    // ps++;
-
-    //return next_tok;
   }
 
   std::vector<std::string> tokenize(const std::string& verilog_code) {
