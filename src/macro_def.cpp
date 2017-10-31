@@ -1,5 +1,6 @@
 #include "macro_def.h"
 
+#include "parse.h"
 #include "tokenize.h"
 
 #include <iostream>
@@ -37,13 +38,13 @@ namespace vparser {
       
       if (t == "`") {
         string macro_name = tokens[i + 1];
-        cout << "macro name" << endl;
-        macro_def md =
-          find_by(defs, [macro_name](const macro_def& m) {
-              return m.get_name() == macro_name;
-            });
+        cout << "macro name = " << macro_name << endl;
+        // macro_def md =
+        //   find_by(defs, [macro_name](const macro_def& m) {
+        //       return m.get_name() == macro_name;
+        //     });
 
-        cout << md.get_name() << endl;
+        // cout << md.get_name() << endl;
       } else {
         preprocessed_tokens.push_back(t);
       }
@@ -67,7 +68,33 @@ namespace vparser {
     for (auto& line : lines) {
       if (line[0] == '`') {
         cout << "MACRO: " << line << endl;
-        defs.push_back(macro_def());
+
+        vector<string> toks = tokenize(line);
+        token_stream ts(toks);
+        ts++;
+        ts++;
+
+        defs.push_back(macro_def(ts.next()));
+
+        ts++;
+
+        vector<string> args_names;
+
+        parse_token("(", ts);
+
+        while (true) {
+          args_names.push_back(ts.next());
+          ts++;
+
+          if (ts.next() == ")") {
+            break;
+          }
+
+          parse_token(",", ts);
+        }
+
+        parse_token(")", ts);
+
       } else {
         prep_text += line + "\n";
       }

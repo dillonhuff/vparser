@@ -11,7 +11,8 @@ namespace vparser {
 
   public:
 
-    macro_def(const std::string& name) {}
+    macro_def(const std::string& name,
+              const std::vector<std::string>& arg_names) {}
 
     std::string get_name() const { return name; }
   };
