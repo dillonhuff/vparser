@@ -100,7 +100,6 @@ namespace vparser {
 
     REQUIRE(macro_defs.size() == 1);
 
-    
     cout << "prep text = " << endl;
     cout << prep.text << endl;
     

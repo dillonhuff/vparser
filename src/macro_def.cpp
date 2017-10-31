@@ -29,13 +29,31 @@ namespace vparser {
                               const std::vector<macro_def>& defs) {
     vector<string> tokens = tokenize(text);
 
-    cout << "TEXT" << endl;
-    for (auto& t : tokens) {
-      cout << t << endl;
-    }
-    cout << "DONE." << endl;
+    vector<string> preprocessed_tokens;
 
-    return text;
+    //for (auto& t : tokens) {
+    for (int i = 0; i < tokens.size(); i++) {
+      auto t = tokens[i];
+      
+      if (t == "`") {
+        string macro_name = tokens[i + 1];
+        cout << "macro name" << endl;
+        macro_def md =
+          find_by(defs, [macro_name](const macro_def& m) {
+              return m.get_name() == macro_name;
+            });
+
+        cout << md.get_name() << endl;
+      } else {
+        preprocessed_tokens.push_back(t);
+      }
+    }
+
+    string prep_text;
+    for (auto& t : preprocessed_tokens) {
+      prep_text += " " + t;
+    }
+    return prep_text;
   }
 
   preprocessed_verilog

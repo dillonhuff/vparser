@@ -6,6 +6,14 @@
 namespace vparser {
 
   class macro_def {
+
+    std::string name;
+
+  public:
+
+    macro_def(const std::string& name) {}
+
+    std::string get_name() const { return name; }
   };
 
   class preprocessed_verilog {
