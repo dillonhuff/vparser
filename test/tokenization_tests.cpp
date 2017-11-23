@@ -100,4 +100,11 @@ namespace vparser {
     REQUIRE(tokenize(str).size() == 8);
   }
 
+  TEST_CASE("String literal parsing preserves quotes") {
+    string str = "\"hello\"";
+    auto toks = tokenize(str);
+
+    REQUIRE(toks[0] == "\"hello\"");
+  }
+
 }

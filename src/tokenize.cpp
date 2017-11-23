@@ -62,7 +62,6 @@ namespace vparser {
       (c == ')') ||
       (c == '{') ||
       (c == '}') ||
-      //      (c == '"') ||
       (c == '.') ||
       (c == '[') ||
       (c == ']') ||
@@ -171,15 +170,20 @@ namespace vparser {
   string parse_string_literal(parse_state& ps) {
     assert(ps.next() == '"');
 
+    string tok = "";
+    tok += "\"";
+
     ps++;
 
-    string tok = "";
+
     while (ps.next() != '"') {
       tok += ps.next();
       ps++;
     }
 
     assert(ps.next() == '"');
+
+    tok += "\"";
     ps++;
 
     return tok;
