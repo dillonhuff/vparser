@@ -258,10 +258,11 @@ namespace vparser {
 	if (ps.next(1) == '=') {
 	  nextTok = "==";
 	  ps++;
-	}
-	nextTok = "=";
-
-	ps++;
+          ps++;
+	} else {
+          nextTok = "=";
+          ps++;
+        }
 
       } else if (c == '<') {
 	nextTok = parse_lt(ps);

@@ -103,7 +103,7 @@ namespace vparser {
     cout << "prep text = " << endl;
     cout << prep.text << endl;
     
-    string prep_str = "module test_mod(); if(in == out) begin $disply(\"No way man!!!\"); $finish(1); end\nendmodule";
+    string prep_str = "module test_mod(); if(in == out) begin $display(\"No way man!!!\"); $finish(1); end\nendmodule";
 
     REQUIRE(prep.text == prep_str);
     

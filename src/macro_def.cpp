@@ -35,8 +35,6 @@ namespace vparser {
 
     vector<string> current_toks;
     while (true) {
-      ts++;
-
       if (ts.next() == ")") {
         ts++;
         break;
@@ -45,7 +43,8 @@ namespace vparser {
       } else {
         current_toks.push_back(ts.next());
       }
-      
+
+      ts++;
     }
 
     toks.push_back(current_toks);
@@ -82,6 +81,14 @@ namespace vparser {
 
         vector<vector<string>> args =
           parse_comma_list(ts);
+
+        cout << "Args" << endl;
+        for (auto& arg : args) {
+          cout << "---- A" << endl;
+          for (auto& tok : arg) {
+            cout << "\t" << tok << endl;
+          }
+        }
 
         assert(args.size() == md.get_arg_names().size());
 

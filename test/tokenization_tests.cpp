@@ -67,6 +67,14 @@ namespace vparser {
     REQUIRE(toks.size() == 17);
   }
 
+  TEST_CASE("== Comparison") {
+    string str = "config_cb == 32'd0";
+    auto toks = tokenize(str);
+
+    REQUIRE(toks[1] == "==");
+
+  }
+
   TEST_CASE("<= assign") {
     string str = "config_cb <= 32'd0;";
     auto toks = tokenize(str);
@@ -83,6 +91,11 @@ namespace vparser {
 
   TEST_CASE("Parse text with string") {
     string str = "xassert(in == out, \"No way man!!!\")";
+
+    cout << "Parse tex tokens" << endl;
+    for (auto& tk : tokenize(str)) {
+      cout << tk << endl;
+    }
 
     REQUIRE(tokenize(str).size() == 8);
   }
