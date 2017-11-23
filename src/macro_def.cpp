@@ -40,6 +40,7 @@ namespace vparser {
         break;
       } else if (ts.next() == ",") {
         toks.push_back(current_toks);
+        current_toks = {};
       } else {
         current_toks.push_back(ts.next());
       }
