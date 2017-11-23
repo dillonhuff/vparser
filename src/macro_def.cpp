@@ -1,11 +1,12 @@
 #include "macro_def.h"
 
+#include "algorithm.h"
 #include "parse.h"
 #include "tokenize.h"
 
-#include <iostream>
 #include <sstream>
 
+using namespace afk;
 using namespace std;
 
 namespace vparser {
@@ -26,28 +27,85 @@ namespace vparser {
     return lines;
   }
 
+  vector<vector<string> >
+  parse_comma_list(token_stream& ts) {
+    parse_token("(", ts);
+
+    vector<vector<string> > toks;
+
+    vector<string> current_toks;
+    while (true) {
+      ts++;
+
+      if (ts.next() == ")") {
+        ts++;
+        break;
+      } else if (ts.next() == ",") {
+        toks.push_back(current_toks);
+      } else {
+        current_toks.push_back(ts.next());
+      }
+      
+    }
+
+    toks.push_back(current_toks);
+
+    return toks;
+  }
+
   std::string preprocess_text(const std::string& text,
                               const std::vector<macro_def>& defs) {
     vector<string> tokens = tokenize(text);
+    token_stream ts(tokens);
 
     vector<string> preprocessed_tokens;
 
-    //for (auto& t : tokens) {
-    for (int i = 0; i < tokens.size(); i++) {
-      auto t = tokens[i];
+    while (ts.chars_left()) {
+
+      auto t = ts.next();
       
       if (t == "`") {
-        string macro_name = tokens[i + 1];
+        string macro_name = ts.next(1);
         cout << "macro name = " << macro_name << endl;
-        // macro_def md =
-        //   find_by(defs, [macro_name](const macro_def& m) {
-        //       return m.get_name() == macro_name;
-        //     });
+        auto mdit = find_if(begin(defs), end(defs), [macro_name](const macro_def& m) {
+            return m.get_name() == macro_name;
+          });
 
-        // cout << md.get_name() << endl;
+        assert(mdit != end(defs));
+
+        macro_def md = *mdit;
+
+        cout << md.get_name() << endl;
+
+        ts++;
+        ts++;
+
+        vector<vector<string>> args =
+          parse_comma_list(ts);
+
+        assert(args.size() == md.get_arg_names().size());
+
+        map<string, vector<string> > arg_expansions;
+        for (int i = 0; i < args.size(); i++) {
+          arg_expansions.insert({md.get_arg_names()[i], args[i]});
+        }
+
+        for (auto& tok : md.get_body()) {
+          if (contains_key(tok, arg_expansions)) {
+            for (auto& arg_tok : arg_expansions[tok]) {
+              preprocessed_tokens.push_back(arg_tok);
+            }
+          } else {
+            preprocessed_tokens.push_back(tok);
+          }
+        }
+        
+
       } else {
         preprocessed_tokens.push_back(t);
       }
+
+      ts++;
     }
 
     string prep_text;
@@ -60,6 +118,12 @@ namespace vparser {
   preprocessed_verilog
   preprocess_code(const std::string& verilog_text) {
     vector<string> lines = split_lines(verilog_text);
+
+    cout << "LINES" << endl;
+    for (auto& ln : lines) {
+      cout << ln << endl;
+    }
+    cout << "END LINES" << endl;
 
     vector<macro_def> defs;
 
@@ -74,8 +138,9 @@ namespace vparser {
         ts++;
         ts++;
 
-        defs.push_back(macro_def(ts.next()));
+        string macro_name = ts.next();
 
+        cout << "Name: " << macro_name << endl;
         ts++;
 
         vector<string> args_names;
@@ -95,7 +160,28 @@ namespace vparser {
 
         parse_token(")", ts);
 
+        cout << "Arg names" << endl;
+        for (auto& nm : args_names) {
+          cout << nm << endl;
+        }
+
+        vector<string> text;
+        while (ts.chars_left()) {
+          text.push_back(ts.next());
+          ts++;
+        }
+
+        cout << "Macro text" << endl;
+        for (auto& tx : text) {
+          cout << tx << " ";
+        }
+        cout << endl;
+
+        defs.push_back(macro_def(macro_name, args_names, text));
+
+
       } else {
+        cout << "Appending line " << line << endl;
         prep_text += line + "\n";
       }
     }
