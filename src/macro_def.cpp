@@ -34,14 +34,24 @@ namespace vparser {
     vector<vector<string> > toks;
 
     vector<string> current_toks;
+    int numParens = 1;
     while (true) {
       if (ts.next() == ")") {
-        ts++;
-        break;
+        numParens--;
+        if (numParens == 0) {
+          ts++;
+          break;
+        } else {
+          current_toks.push_back(")");
+        }
       } else if (ts.next() == ",") {
         toks.push_back(current_toks);
         current_toks = {};
       } else {
+
+        if (ts.next() == "(") {
+          numParens++;
+        }
         current_toks.push_back(ts.next());
       }
 
@@ -109,6 +119,7 @@ namespace vparser {
             }
           }
         } else {
+
           for (auto& tok : md.get_body()) {
             preprocessed_tokens.push_back(tok);
           }
@@ -195,6 +206,12 @@ namespace vparser {
               concat(text, txt);
             }
             text.push_back(")");
+
+            cout << "Macro body: ";
+            for (auto& t : text) {
+              cout << t << " ";
+            }
+            cout << endl;
 
             defs.push_back(macro_def(macro_name, {}, text));
           }

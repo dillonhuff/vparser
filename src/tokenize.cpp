@@ -285,7 +285,7 @@ namespace vparser {
         nextTok = "||";
         ps++;
         ps++;
-      }else if (c == '!') {
+      } else if (c == '!') {
 	assert(ps.next(1) == '=');
 	nextTok = "!=";
 	ps++;

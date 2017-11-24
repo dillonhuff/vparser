@@ -124,7 +124,7 @@ namespace vparser {
     cout << "prep text = " << endl;
     cout << prep.text << endl;
     
-    string prep_str = " ( phase == 1'b0 && ( input_count > 2'd1 || ( input_count == 2'd1 && wen ) ) )";
+    string prep_str = " ( phase == 1 ' b0 && ( input_count > 2 ' d1 || ( input_count == 2 ' d1 && wen ) ) )";
 
     REQUIRE(prep.text == prep_str);
     
