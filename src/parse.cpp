@@ -149,6 +149,8 @@ namespace vparser {
     string module_type = ts.next();
     ts++;
 
+    cout << "Parsing module: " << module_type << endl;
+
     assert(is_id(module_type));
 
     string module_name = ts.next();
@@ -378,7 +380,7 @@ namespace vparser {
   statement* parse_statement(token_stream& ts) {
     string ns = ts.next();
 
-    if ((ns == "input") || (ns == "output") || (ns == "reg")) {
+    if ((ns == "input") || (ns == "output") || (ns == "reg") || (ns == "wire")) {
       return parse_declaration(ts);
     } else if (ns == "always") {
       return parse_always(ts);
