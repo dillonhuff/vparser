@@ -23,6 +23,13 @@ namespace vparser {
     REQUIRE(tokens.size() == 5);
   }
 
+  TEST_CASE("Logical and") {
+    string test_str = "a && b";
+    vector<string> toks = tokenize(test_str);
+
+    REQUIRE(toks[1] == "&&");
+  }
+
   TEST_CASE("Comment line") {
     string test_str = " \n // Hello this is a comment string // asdf\n asdf //";
     vector<string> tokens = tokenize(test_str);

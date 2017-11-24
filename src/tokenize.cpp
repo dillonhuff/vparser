@@ -272,10 +272,20 @@ namespace vparser {
 	nextTok = parse_lt(ps);
       } else if (c == '>') {
 	nextTok = parse_gt(ps);
-      } else if (is_boolop(c)) {
+      } else if (is_boolop(c) && !is_boolop(ps.next(1))) {
 	nextTok = string(1, c);
 	ps++;
-      } else if (c == '!') {
+      } else if (c == '&') {
+        assert(ps.next(1) == '&');
+        nextTok = "&&";
+        ps++;
+        ps++;
+      } else if (c == '|') {
+        assert(ps.next(1) == '|');
+        nextTok = "||";
+        ps++;
+        ps++;
+      }else if (c == '!') {
 	assert(ps.next(1) == '=');
 	nextTok = "!=";
 	ps++;

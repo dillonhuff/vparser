@@ -190,9 +190,11 @@ namespace vparser {
 
           } else {
             vector<string> text;
+            text.push_back("(");
             for (auto& txt : subsequent_text) {
               concat(text, txt);
             }
+            text.push_back(")");
 
             defs.push_back(macro_def(macro_name, {}, text));
           }
