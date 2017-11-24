@@ -255,8 +255,6 @@ namespace vparser {
       return new string_literal_expr(nx);
     }
 
-    
-
     return expr;
   }
 

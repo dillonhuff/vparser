@@ -151,43 +151,58 @@ namespace vparser {
         cout << "Name: " << macro_name << endl;
         ts++;
 
-        vector<string> args_names;
+        vector<vector<string> > subsequent_text =
+          parse_comma_list(ts);
 
-        parse_token("(", ts);
+        bool is_arg_macro = all_of(subsequent_text, [](const vector<string>& txt) {
+            return txt.size() == 1;
+          });
 
-        while (true) {
-          args_names.push_back(ts.next());
-          ts++;
+        cout << "Is argmacro ? " << is_arg_macro << endl;
 
-          if (ts.next() == ")") {
-            break;
+        if (is_arg_macro) {
+          vector<string> args_names;
+          for (auto& text : subsequent_text) {
+            args_names.push_back(text[0]);
           }
 
-          parse_token(",", ts);
+          // parse_token("(", ts);
+
+          // while (true) {
+          //   args_names.push_back(ts.next());
+          //   ts++;
+
+          //   if (ts.next() == ")") {
+          //     break;
+          //   }
+
+          //   parse_token(",", ts);
+          // }
+
+          // parse_token(")", ts);
+
+          // cout << "Arg names" << endl;
+          // for (auto& nm : args_names) {
+          //   cout << nm << endl;
+          // }
+
+          vector<string> text;
+          while (ts.chars_left()) {
+            text.push_back(ts.next());
+            ts++;
+          }
+
+          cout << "Macro text" << endl;
+          for (auto& tx : text) {
+            cout << tx << " ";
+          }
+          cout << endl;
+
+          defs.push_back(macro_def(macro_name, args_names, text));
+
+        } else {
+          assert(false);
         }
-
-        parse_token(")", ts);
-
-        cout << "Arg names" << endl;
-        for (auto& nm : args_names) {
-          cout << nm << endl;
-        }
-
-        vector<string> text;
-        while (ts.chars_left()) {
-          text.push_back(ts.next());
-          ts++;
-        }
-
-        cout << "Macro text" << endl;
-        for (auto& tx : text) {
-          cout << tx << " ";
-        }
-        cout << endl;
-
-        defs.push_back(macro_def(macro_name, args_names, text));
-
-
       } else {
         cout << "Appending line " << line << endl;
         prep_text += line + "\n";

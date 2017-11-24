@@ -111,6 +111,25 @@ namespace vparser {
     
   }
 
+  TEST_CASE("Preprocess no argument macro") {
+    string str = "`define MV_TO_RAM (phase==1'b0 && (input_count > 2'd1 || (input_count==2'd1 && wen)))\nMV_TO_RAM";
+
+    preprocessed_verilog prep =
+      preprocess_code(str);
+
+    vector<macro_def> macro_defs = prep.defs;
+
+    REQUIRE(macro_defs.size() == 1);
+
+    cout << "prep text = " << endl;
+    cout << prep.text << endl;
+    
+    string prep_str = " module test_mod ( ) ; if ( in == out ) begin $ display ( \"No way man!!!\" ) ; $ finish ( 1 ) ; end endmodule";
+
+    REQUIRE(prep.text == prep_str);
+    
+  }
+
   TEST_CASE("Reading a real file with multiple statements") {
     std::ifstream t("./test/samples/cb_unq1.v");
     std::string str((std::istreambuf_iterator<char>(t)),
