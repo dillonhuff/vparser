@@ -17,7 +17,8 @@ namespace vparser {
     STATEMENT_EMPTY,
     STATEMENT_MODULE_INSTANTIATION,
     STATEMENT_BLOCKING_ASSIGN,
-    STATEMENT_NON_BLOCKING_ASSIGN
+    STATEMENT_NON_BLOCKING_ASSIGN,
+    STATEMENT_CALL
   };
 
   class statement {
@@ -254,6 +255,25 @@ namespace vparser {
 
     expression* get_rhs() const {
       return rhs;
+    }
+
+  };
+
+  class call_stmt : public statement {
+    std::string name;
+    std::vector<expression*> args;
+
+  public:
+
+    call_stmt(const std::string& name_,
+              const std::vector<expression*>& args_) : name(name_), args(args_) {}
+
+    statement_type get_type() const {
+      return STATEMENT_CALL;
+    }
+
+    virtual void print(std::ostream& out) const {
+      out << " " << std::endl;
     }
 
   };

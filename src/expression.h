@@ -7,13 +7,26 @@ namespace vparser {
   enum expression_type {
     EXPRESSION_ID,
     EXPRESSION_NUM,
-    EXPRESSION_SLICE
+    EXPRESSION_SLICE,
+    EXPRESSION_STRING_LITERAL
   };
 
   class expression {
   public:
 
     virtual expression_type get_type() const = 0;
+  };
+
+  class string_literal_expr : public expression {
+    std::string str;
+
+  public:
+    string_literal_expr(const std::string& str_) : str(str_) {}
+
+    virtual expression_type get_type() const {
+      return EXPRESSION_STRING_LITERAL;
+    }
+
   };
 
   class num_expr : public expression {

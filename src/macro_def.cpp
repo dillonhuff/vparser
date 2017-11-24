@@ -111,9 +111,9 @@ namespace vparser {
 
       } else {
         preprocessed_tokens.push_back(t);
+        ts++;
       }
 
-      ts++;
     }
 
     string prep_text;

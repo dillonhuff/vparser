@@ -250,7 +250,12 @@ namespace vparser {
       parse_token("]", ts);
 
       return new slice_expr(expr, start, end);
+    } else if (nx[0] == '"') {
+      ts++;
+      return new string_literal_expr(nx);
     }
+
+    
 
     return expr;
   }
@@ -301,6 +306,37 @@ namespace vparser {
       return new case_stmt(cases, default_case);
     }
     return new case_stmt(cases);
+  }
+
+  statement* parse_call_statement(token_stream& ts) {
+    parse_token("$", ts);
+
+    string name = ts.next();
+    ts++;
+
+    cout << "name = " << name << endl;
+
+    parse_token("(", ts);
+
+    vector<expression*> args;
+    while (true) {
+      cout << "next = " << ts.next() << endl;
+
+      expression* expr = parse_expression(ts);
+      args.push_back(expr);
+
+      if (ts.next() == ",") {
+        ts++;
+      } else if (ts.next() == ")") {
+        break;
+      }
+    }
+
+    parse_token(")", ts);
+
+    parse_token(";", ts);
+
+    return new call_stmt(name, args);
   }
 
   statement* parse_assign(token_stream& ts) {
@@ -376,6 +412,8 @@ namespace vparser {
     } else if (ns == ";") {
       ts++;
       return new empty_stmt();
+    } else if (ns == "$") {
+      return parse_call_statement(ts);
     } else {
       cout << "Unsupported statement start token = " << ns << endl;
       while (ts.chars_left()) {
