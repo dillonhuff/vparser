@@ -112,7 +112,7 @@ namespace vparser {
   }
 
   TEST_CASE("Preprocess no argument macro") {
-    string str = "`define MV_TO_RAM (phase==1'b0 && (input_count > 2'd1 || (input_count==2'd1 && wen)))\nMV_TO_RAM";
+    string str = "`define MV_TO_RAM (phase==1'b0 && (input_count > 2'd1 || (input_count==2'd1 && wen)))\n`MV_TO_RAM";
 
     preprocessed_verilog prep =
       preprocess_code(str);
@@ -124,7 +124,7 @@ namespace vparser {
     cout << "prep text = " << endl;
     cout << prep.text << endl;
     
-    string prep_str = " module test_mod ( ) ; if ( in == out ) begin $ display ( \"No way man!!!\" ) ; $ finish ( 1 ) ; end endmodule";
+    string prep_str = " ( phase == 1'b0 && ( input_count > 2'd1 || ( input_count == 2'd1 && wen ) ) )";
 
     REQUIRE(prep.text == prep_str);
     
