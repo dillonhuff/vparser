@@ -17,6 +17,8 @@ SET(SRC_FILES ./src/tokenize.cpp
               ./src/macro_def.cpp)
 
 SET(TEST_FILES ./test/tokenization_tests.cpp
+               ./test/expression_parse_tests.cpp
 	       ./test/parse_module_tests.cpp)
+
 
 add_executable(all-tests ${TEST_FILES} ${SRC_FILES})

@@ -213,19 +213,22 @@ namespace vparser {
   }
 
   expression* parse_expression(token_stream& ts) {
+    cout << "REMAINING: " << ts.remaining_string() << endl;
+
+    assert(ts.chars_left());
+
     string nx = ts.next();
 
-    //cout << "nx = " << nx << endl;
+    cout << "nx = " << nx << endl;
 
     expression* expr = nullptr;
     if (is_integer(nx)) {
 
       if (ts.next(1) == "'") {
-        //int len = stoi(nx);
         ts++;
 
         parse_token("'", ts);
-        //string val = ts.next();
+
         ts++;
 
         expr = new num_expr();
@@ -237,6 +240,10 @@ namespace vparser {
     } else if (is_id(nx)) {
       ts++;
       expr = new id_expr(nx);
+    }
+
+    if (!ts.chars_left()) {
+      return expr;
     }
 
     nx = ts.next();
@@ -348,6 +355,8 @@ namespace vparser {
 
     expression* rhs = parse_expression(ts);
 
+    cout << "Remainder after assign = " << ts.remaining_string() << endl;
+
     parse_token(";", ts);
 
     return new assign_stmt(lhs, rhs);
@@ -458,7 +467,8 @@ namespace vparser {
   }
 
   expression* parse_expression(const std::string& stmt_string) {
-    token_stream ts(tokenize(stmt_string));
+    auto toks = tokenize(stmt_string);
+    token_stream ts(toks);
     return parse_expression(ts);
   }
 

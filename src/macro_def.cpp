@@ -35,28 +35,31 @@ namespace vparser {
 
     vector<string> current_toks;
     int numParens = 1;
+
     while (true) {
-      if (ts.next() == ")") {
-        numParens--;
-        if (numParens == 0) {
-          ts++;
-          break;
-        } else {
-          current_toks.push_back(")");
-        }
-      } else if (ts.next() == ",") {
+      if ((ts.next() == ",") && (numParens == 1)) {
         toks.push_back(current_toks);
         current_toks = {};
       } else {
-
         if (ts.next() == "(") {
           numParens++;
         }
+
+        if (ts.next() == ")") {
+          numParens--;
+
+          if (numParens == 0) {
+            break;
+          }
+        }
+
         current_toks.push_back(ts.next());
       }
 
       ts++;
     }
+
+    parse_token(")", ts);
 
     toks.push_back(current_toks);
 

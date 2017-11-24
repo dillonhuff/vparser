@@ -27,6 +27,14 @@ namespace vparser {
       return *this;
     }
 
+    std::string remaining_string() const {
+      std::string rem = "";
+      for (int ind = i; ind < toks.size(); ind++) {
+        rem += toks[ind] + " ";
+      }
+      return rem;
+    }
+
     token_stream operator--(int) {
       i--;
       return *this;
@@ -74,5 +82,7 @@ namespace vparser {
 
   statement* parse_statement(const std::string& stmt_string);
   expression* parse_expression(const std::string& stmt_string);
+
+  expression* parse_expression(token_stream& ts);
 
 }
