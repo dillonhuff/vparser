@@ -35,6 +35,13 @@ namespace vparser {
     cout << endl;
     token_stream ts(toks);
     expression* p = parse_expression(ts);
+
+    cout << "Remaining text = " << ts.remaining_string() << endl;
+
+    SECTION("No tokens left after parsing") {
+
+      REQUIRE(!ts.chars_left());
+    }
   }
 
   

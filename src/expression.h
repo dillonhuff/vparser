@@ -8,7 +8,8 @@ namespace vparser {
     EXPRESSION_ID,
     EXPRESSION_NUM,
     EXPRESSION_SLICE,
-    EXPRESSION_STRING_LITERAL
+    EXPRESSION_STRING_LITERAL,
+    EXPRESSION_BINOP
   };
 
   class expression {
@@ -17,6 +18,19 @@ namespace vparser {
     virtual expression_type get_type() const = 0;
   };
 
+  class binop_expr : public expression {
+    
+  public:
+
+    binop_expr(const std::string& op_,
+               expression* const operand0_,
+               expression* const operand1_) {}
+    virtual expression_type get_type() const {
+      return EXPRESSION_BINOP;
+    }
+
+  };
+  
   class string_literal_expr : public expression {
     std::string str;
 

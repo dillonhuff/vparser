@@ -212,14 +212,8 @@ namespace vparser {
     return val;
   }
 
-  expression* parse_expression(token_stream& ts) {
-    cout << "REMAINING: " << ts.remaining_string() << endl;
-
-    assert(ts.chars_left());
-
+  expression* parse_basic_expression(token_stream& ts) {
     string nx = ts.next();
-
-    cout << "nx = " << nx << endl;
 
     expression* expr = nullptr;
     if (is_integer(nx)) {
@@ -240,31 +234,94 @@ namespace vparser {
     } else if (is_id(nx)) {
       ts++;
       expr = new id_expr(nx);
-    }
-
-    if (!ts.chars_left()) {
-      return expr;
-    }
-
-    nx = ts.next();
-    if (nx[0] == '[') {
-      parse_token("[", ts);
-
-      expression* start = parse_expression(ts);
-
-      parse_token(":", ts);
-
-      expression* end = parse_expression(ts);
-
-      parse_token("]", ts);
-
-      return new slice_expr(expr, start, end);
     } else if (nx[0] == '"') {
       ts++;
       return new string_literal_expr(nx);
     }
 
     return expr;
+  }
+
+  bool is_string_literal(const std::string& nx) {
+    return nx[0] == '"';
+  }
+
+  // TODO: Update to take paren and bracket levels into account
+  bool at_expression_end(const token_stream& ts) {
+    return !ts.chars_left() || (ts.next() == ":") || (ts.next() == "]") || (ts.next() == ")") || (ts.next() == "=") || (ts.next() == ";") || (ts.next() == "<=");
+  }
+
+  bool is_binop(const std::string& nx) {
+    return (nx == "&&") ||
+      (nx == "&") ||
+      (nx == "||") ||
+      (nx == "|") ||
+      (nx == "==");
+  }
+
+  expression* parse_expression(token_stream& ts) {
+    cout << "REMAINING: " << ts.remaining_string() << endl;
+
+    assert(ts.chars_left());
+
+    vector<expression*> exprs;
+    while (!at_expression_end(ts)) {
+      string nx = ts.next();
+
+      cout << "nx = " << nx << endl;
+
+      expression* expr = nullptr;
+      if (is_integer(nx) ||
+          is_id(nx) ||
+          is_string_literal(nx)) {
+        expr = parse_basic_expression(ts);
+        exprs.push_back(expr);
+      } else if (nx[0] == '[') {
+        assert(exprs.size() == 1);
+
+        parse_token("[", ts);
+
+        expression* start = parse_expression(ts);
+
+        if (ts.next() == ":") {
+          parse_token(":", ts);
+          expression* end = parse_expression(ts);
+          parse_token("]", ts);
+          auto exp = new slice_expr(exprs.back(), start, end);
+          exprs.pop_back();
+          exprs.push_back(exp);
+        } else {
+          cout << "Single bracket expr" << endl;
+          parse_token("]", ts);
+          auto exp = new slice_expr(exprs.back(), start, start);
+          exprs.pop_back();
+          exprs.push_back(exp);
+        }
+
+      } else if (is_binop(nx)) {
+        string op = nx;
+        ts++;
+
+        auto op2 = parse_expression(ts);
+
+        assert(exprs.size() == 1);
+
+        auto op1 = exprs[0];
+        exprs.pop_back();
+
+        exprs.push_back(new binop_expr(op, op1, op2));
+      } else if (nx == "(") {
+        ts++;
+        expression* exp = parse_expression(ts);
+        return exp;
+      } else {
+        assert(false);
+      }
+    }
+
+    assert(exprs.size() == 1);
+
+    return exprs[0];
   }
 
   statement* parse_case(token_stream& ts) {
