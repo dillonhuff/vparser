@@ -256,7 +256,9 @@ namespace vparser {
       (nx == "&") ||
       (nx == "||") ||
       (nx == "|") ||
-      (nx == "==");
+      (nx == "==") ||
+      (nx == "-") ||
+      (nx == "+");
   }
 
   expression* parse_expression(token_stream& ts, const bool in_paren_expr) {
@@ -327,7 +329,7 @@ namespace vparser {
       } else if (nx == "(") {
         ts++;
         expression* exp = parse_expression(ts, true);
-        return exp;
+        exprs.push_back(exp);
       } else {
         assert(false);
       }
