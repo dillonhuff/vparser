@@ -306,10 +306,24 @@ namespace vparser {
 
         assert(exprs.size() == 1);
 
-        auto op1 = exprs[0];
+        auto op1 = exprs.back();
         exprs.pop_back();
 
         exprs.push_back(new binop_expr(op, op1, op2));
+      } else if (nx == "?") {
+        string op = nx;
+        ts++;
+
+        auto op1 = parse_expression(ts);
+
+        parse_token(":", ts);
+
+        auto op2 = parse_expression(ts);
+
+        auto op0 = exprs.back();
+        exprs.pop_back();
+        exprs.push_back(new trinop_expr(op, op0, op1, op2));
+
       } else if (nx == "(") {
         ts++;
         expression* exp = parse_expression(ts, true);

@@ -44,5 +44,26 @@ namespace vparser {
     }
   }
 
+  TEST_CASE("Conditional operation") {
+    string str = "( config_mem [ 19 ] == 1 ' b1 ) ? chain_in : xdata_in";
+    auto toks = tokenize(str);
+
+    cout << "TOKENS: ";
+    for (auto& t : toks) {
+      cout << t << " ";
+    }
+    cout << endl;
+    token_stream ts(toks);
+    expression* p = parse_expression(ts);
+
+    cout << "Remaining text = " << ts.remaining_string() << endl;
+
+    SECTION("No tokens left after parsing") {
+
+      REQUIRE(!ts.chars_left());
+    }
+
+  }
+
   
 }
