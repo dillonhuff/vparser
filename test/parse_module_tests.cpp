@@ -123,6 +123,28 @@ namespace vparser {
     
   }
 
+  TEST_CASE("Non blocking assignment") {
+    string str = "config_cb <= 32'd0;";
+    auto toks = tokenize(str);
+
+    cout << "TOKENS = ";
+    for (auto& t : toks) {
+      cout << t << " ";
+    }
+    cout << endl;
+
+    SECTION("6 tokens in statement") {
+      REQUIRE(toks.size() == 6);
+    }
+
+    statement* stmt = parse_statement(str);
+
+    SECTION("Resulting statement is a non blocking assignment") {
+      REQUIRE(stmt->get_type() == STATEMENT_NON_BLOCKING_ASSIGN);
+    }
+  }
+
+  
   TEST_CASE("Reading a real file with multiple statements") {
     std::ifstream t("./test/samples/cb_unq1.v");
     std::string str((std::istreambuf_iterator<char>(t)),
@@ -140,13 +162,6 @@ namespace vparser {
 
     SECTION("First statement is a declaration") {
       REQUIRE(vm.get_statements()[0]->get_type() == STATEMENT_DECL);
-    }
-
-    SECTION("Non blocking assignment") {
-      string str = "config_cb <= 32'd0;";
-      statement* stmt = parse_statement(str);
-
-      REQUIRE(stmt->get_type() == STATEMENT_NON_BLOCKING_ASSIGN);
     }
 
     SECTION("Parse a define macro") {

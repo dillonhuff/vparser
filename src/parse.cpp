@@ -259,7 +259,7 @@ namespace vparser {
       (nx == "==");
   }
 
-  expression* parse_expression(token_stream& ts) {
+  expression* parse_expression(token_stream& ts, const bool in_paren_expr) {
     cout << "REMAINING: " << ts.remaining_string() << endl;
 
     assert(ts.chars_left());
@@ -312,16 +312,27 @@ namespace vparser {
         exprs.push_back(new binop_expr(op, op1, op2));
       } else if (nx == "(") {
         ts++;
-        expression* exp = parse_expression(ts);
+        expression* exp = parse_expression(ts, true);
         return exp;
       } else {
         assert(false);
       }
     }
 
+    if (in_paren_expr) {
+      assert(ts.chars_left() && (ts.next() == ")"));
+      ts++;
+    }
+
+    cout << "# of Expressions = " << exprs.size() << endl;
+
     assert(exprs.size() == 1);
 
     return exprs[0];
+  }
+
+  expression* parse_expression(token_stream& ts) {
+    return parse_expression(ts, false);
   }
 
   statement* parse_case(token_stream& ts) {
@@ -432,8 +443,11 @@ namespace vparser {
   }
 
   statement* parse_non_blocking_assign(token_stream& ts) {
+    cout << "Parsing non blocking assign, string = " << ts.remaining_string() << endl;
+
     expression* lhs = parse_expression(ts);
 
+    cout << "Parsed lhs, remaining = " << ts.remaining_string() << endl;
     parse_token("<=", ts);
 
     expression* rhs = parse_expression(ts);
@@ -519,7 +533,8 @@ namespace vparser {
   }
 
   statement* parse_statement(const std::string& stmt_string) {
-    token_stream ts(tokenize(stmt_string));
+    auto toks = tokenize(stmt_string);
+    token_stream ts(toks);
     return parse_statement(ts);
   }
 
