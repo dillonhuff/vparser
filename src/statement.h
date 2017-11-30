@@ -79,17 +79,19 @@ namespace vparser {
 
   protected:
 
+    expression* condition;
     statement* if_exe;
     statement* else_exe;
 
   public:
 
-    if_stmt(statement* const if_exe_) :
-      if_exe(if_exe_), else_exe(nullptr) {}
+    if_stmt(expression* const condition_, statement* const if_exe_) :
+      condition(condition_), if_exe(if_exe_), else_exe(nullptr) {}
 
-    if_stmt(statement* const if_exe_,
+    if_stmt(expression* const condition_,
+            statement* const if_exe_,
             statement* const else_exe_) :
-      if_exe(if_exe_), else_exe(else_exe_) {}
+      condition(condition_), if_exe(if_exe_), else_exe(else_exe_) {}
 
     statement* get_if_exe() { return if_exe; }
     statement* get_else_exe() { return else_exe; }

@@ -132,7 +132,11 @@ namespace vparser {
   statement* parse_if(token_stream& ts) {
     parse_token("if", ts);
 
-    parse_enclosed_tokens("(", ")", ts);
+    cout << "Start parsing condition" << endl;
+
+    expression* condition = parse_expression(ts);
+
+    cout << "Got condition" << endl;
 
     statement* if_s = parse_statement(ts); //nullptr;
     statement* ex_s = nullptr;
@@ -142,7 +146,7 @@ namespace vparser {
       ex_s = parse_statement(ts);
     }
 
-    return new if_stmt(if_s, ex_s);
+    return new if_stmt(condition, if_s, ex_s);
   }
 
   statement* parse_module_instantiation(token_stream& ts) {
@@ -248,7 +252,11 @@ namespace vparser {
 
   // TODO: Update to take paren and bracket levels into account
   bool at_expression_end(const token_stream& ts) {
-    return !ts.chars_left() || (ts.next() == ":") || (ts.next() == "]") || (ts.next() == ")") || (ts.next() == "=") || (ts.next() == ";") || (ts.next() == "<=");
+    return !ts.chars_left() || (ts.next() == ":") || (ts.next() == "]") || (ts.next() == ")") || (ts.next() == "=") || (ts.next() == ";") || (ts.next() == "<=") || (ts.next() == "begin");
+  }
+
+  bool is_prefix_unop(const std::string& nx) {
+    return nx == "~";
   }
 
   bool is_binop(const std::string& nx) {
@@ -258,11 +266,25 @@ namespace vparser {
       (nx == "|") ||
       (nx == "==") ||
       (nx == "-") ||
-      (nx == "+");
+      (nx == "+") ||
+      (nx == "<<") ||
+      (nx == ">>") ||
+      (nx == "<") ||
+      (nx == ">") ||
+      (nx == "<=") ||
+      (nx == ">=");
+      
   }
 
-  expression* parse_expression(token_stream& ts, const bool in_paren_expr) {
-    cout << "REMAINING: " << ts.remaining_string() << endl;
+  enum expression_parse_state {
+    EXPR_STATE_NONE,
+    EXPR_STATE_PAREN_EXPR,
+    EXPR_STATE_BRACKED_EXPR
+  };
+
+  expression* parse_expression(token_stream& ts,
+                               const expression_parse_state expr_state) {
+    //cout << "REMAINING: " << ts.remaining_string() << endl;
 
     assert(ts.chars_left());
 
@@ -300,6 +322,12 @@ namespace vparser {
           exprs.push_back(exp);
         }
 
+      } else if (is_prefix_unop(nx)) {
+        string op = nx;
+        ts++;
+
+        auto op0 = parse_expression(ts);
+        exprs.push_back(new unop_expr(op, op0));
       } else if (is_binop(nx)) {
         string op = nx;
         ts++;
@@ -328,14 +356,14 @@ namespace vparser {
 
       } else if (nx == "(") {
         ts++;
-        expression* exp = parse_expression(ts, true);
+        expression* exp = parse_expression(ts, EXPR_STATE_PAREN_EXPR);
         exprs.push_back(exp);
       } else {
         assert(false);
       }
     }
 
-    if (in_paren_expr) {
+    if (expr_state == EXPR_STATE_PAREN_EXPR) {
       assert(ts.chars_left() && (ts.next() == ")"));
       ts++;
     }
@@ -348,7 +376,7 @@ namespace vparser {
   }
 
   expression* parse_expression(token_stream& ts) {
-    return parse_expression(ts, false);
+    return parse_expression(ts, EXPR_STATE_NONE);
   }
 
   statement* parse_case(token_stream& ts) {
