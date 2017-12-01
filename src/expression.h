@@ -5,6 +5,16 @@
 
 namespace vparser {
 
+  static inline std::string indent(const int indent_level) {
+    std::string ind = "";
+
+    for (int i = 0; i < indent_level; i++) {
+      ind += "\t";
+    }
+
+    return ind;
+  }
+  
   enum expression_type {
     EXPRESSION_ID,
     EXPRESSION_NUM,
@@ -20,6 +30,10 @@ namespace vparser {
   public:
 
     virtual expression_type get_type() const = 0;
+
+    virtual std::string to_string() const {
+      return "EXPR PLACEHOLDER";
+    }
   };
 
   class concat_expr : public expression {

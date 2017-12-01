@@ -28,6 +28,10 @@ namespace vparser {
 
     virtual void print(std::ostream& out) const = 0;
 
+    virtual std::string to_string(const int indent_level) const {
+      return indent(indent_level) + "STATEMENT PLACEHOLDER";
+    }
+
     virtual ~statement() {}
   };
 
@@ -98,6 +102,12 @@ namespace vparser {
     
     statement_type get_type() const {
       return STATEMENT_IF;
+    }
+
+    std::string to_string(const int lvl) const {
+      std::string str = indent(lvl) + "if (" + condition->to_string() + ")";
+      
+      return str;
     }
 
     virtual void print(std::ostream& out) const {

@@ -85,7 +85,13 @@ namespace vparser {
         }
       }
 
-      str += "); endmodule";
+      str += ");";
+
+      for (auto& stmt : get_statements()) {
+        str += stmt->to_string(1) + "\n";
+      }
+
+      str += "\nendmodule";
       return str;
     }
 
