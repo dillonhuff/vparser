@@ -487,7 +487,7 @@ namespace vparser {
 
     expression* rhs = parse_expression(ts);
 
-    cout << "Remainder after assign = " << ts.remaining_string() << endl;
+    //cout << "Remainder after assign = " << ts.remaining_string() << endl;
 
     parse_token(";", ts);
 
@@ -507,11 +507,11 @@ namespace vparser {
   }
 
   statement* parse_non_blocking_assign(token_stream& ts) {
-    cout << "Parsing non blocking assign, string = " << ts.remaining_string() << endl;
+    //cout << "Parsing non blocking assign, string = " << ts.remaining_string() << endl;
 
     expression* lhs = parse_expression(ts);
 
-    cout << "Parsed lhs, remaining = " << ts.remaining_string() << endl;
+    //cout << "Parsed lhs, remaining = " << ts.remaining_string() << endl;
     parse_token("<=", ts);
 
     expression* rhs = parse_expression(ts);
