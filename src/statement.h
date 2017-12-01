@@ -143,6 +143,10 @@ namespace vparser {
       out << " " << std::endl;
     }
 
+    virtual std::string to_string(const int) const {
+      return "";
+    }
+
   };
 
   class begin_stmt : public statement {
@@ -350,7 +354,7 @@ namespace vparser {
           str += ", ";
         }
       }
-      str += ")";
+      str += ");";
       return str;
     }
     
@@ -387,6 +391,20 @@ namespace vparser {
 
     std::vector<std::pair<std::string, expression*> > get_port_assignments() const {
       return port_assignments;
+    }
+
+    std::string to_string(const int lvl) const {
+      std::string str = indent(lvl) + module_type + " " + name + "(";
+
+      for (int i = 0; i < port_assignments.size(); i++) {
+        str += "." + port_assignments[i].first + "(" + port_assignments[i].second->to_string() + ")";
+        if (i < (port_assignments.size() - 1)) {
+          str += ", ";
+        }
+      }
+      str += ");";
+
+      return str;
     }
 
     virtual void print(std::ostream& out) const {
