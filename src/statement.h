@@ -42,6 +42,11 @@ namespace vparser {
       return STATEMENT_DECL;
     }
 
+    std::string to_string(const int lvl) const {
+      std::string str = "DECLARATION";
+      return str;
+    }
+    
     virtual void print(std::ostream& out) const {
       out << "declaration" << std::endl;
     }
@@ -68,6 +73,13 @@ namespace vparser {
       return stmt;
     }
 
+    std::string to_string(const int lvl) const {
+      std::string str =
+        indent(lvl) + "always @(INSERT TOKENS)\n" +
+        get_statement()->to_string(lvl + 1);
+      return str;
+    }
+    
     virtual void print(std::ostream& out) const {
       out << "always () begin" << std::endl;
       // for (auto& stmt : get_statement_block()) {
@@ -97,15 +109,19 @@ namespace vparser {
             statement* const else_exe_) :
       condition(condition_), if_exe(if_exe_), else_exe(else_exe_) {}
 
-    statement* get_if_exe() { return if_exe; }
-    statement* get_else_exe() { return else_exe; }
+    statement* get_if_exe() const { return if_exe; }
+    statement* get_else_exe() const { return else_exe; }
     
     statement_type get_type() const {
       return STATEMENT_IF;
     }
 
     std::string to_string(const int lvl) const {
-      std::string str = indent(lvl) + "if (" + condition->to_string() + ")";
+      std::string str = indent(lvl) + "if (" + condition->to_string() + ")\n";
+      str += get_if_exe()->to_string(lvl + 1);
+      if (get_else_exe() != nullptr) {
+        str += indent(lvl) + "else\n" + get_else_exe()->to_string(lvl + 1);
+      }
       
       return str;
     }
@@ -143,12 +159,21 @@ namespace vparser {
       return stmts;
     }
 
+    std::string to_string(const int lvl) const {
+      std::string str = indent(lvl) + "begin\n";
+      for (auto& stmt : get_statements()) {
+        str += stmt->to_string(lvl + 1);
+      }
+      str += "\n" + indent(lvl) + "end";
+      return str;
+    }
+    
     statement_type get_type() const {
       return STATEMENT_BEGIN;
     }
 
     virtual void print(std::ostream& out) const {
-      out << " " << std::endl;
+      out << to_string(0) << std::endl;
     }
 
   };
@@ -203,6 +228,12 @@ namespace vparser {
       out << " " << std::endl;
     }
 
+    std::string to_string(const int lvl) const {
+      std::string str =
+        indent(lvl) + "assign " + lhs->to_string() + " = " + rhs->to_string();
+      return str;
+    }
+    
     expression* get_lhs() const {
       return lhs;
     }

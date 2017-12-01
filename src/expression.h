@@ -9,7 +9,7 @@ namespace vparser {
     std::string ind = "";
 
     for (int i = 0; i < indent_level; i++) {
-      ind += "\t";
+      ind += "  ";
     }
 
     return ind;
