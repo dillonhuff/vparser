@@ -223,9 +223,12 @@ namespace vparser {
 
     REQUIRE(macro_defs.size() == 6);
 
-    cout << "prep text = " << endl;
-    cout << prep.text << endl;
+    // cout << "prep text = " << endl;
+    // cout << prep.text << endl;
     
     verilog_module vm = parse_module(prep.text);
+
+    cout << "------ Multi statement file -----" << endl;
+    cout << vm.to_string() << endl;
   }
 }

@@ -219,11 +219,11 @@ namespace vparser {
             defs.push_back(macro_def(macro_name, {}, text));
           }
         } else {
-          cout << "Appending line " << line << endl;
+
           prep_text += line + "\n";
         }
       } else {
-        cout << "Appending line " << line << endl;
+
         prep_text += line + "\n";
       }
     }

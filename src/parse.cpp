@@ -577,7 +577,7 @@ namespace vparser {
     token_stream ts(tokens);
     parse_token("module", ts);
 
-    string modName = ts.next();
+    string mod_name = ts.next();
     ts++;
 
     vector<string> port_names =
@@ -595,7 +595,7 @@ namespace vparser {
 
     assert(!ts.chars_left());
 
-    return verilog_module(port_names, statements);
+    return verilog_module(mod_name, port_names, statements);
   }
 
   statement* parse_statement(const std::string& stmt_string) {
