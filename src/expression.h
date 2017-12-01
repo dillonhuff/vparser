@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <string>
 #include <vector>
 
@@ -121,7 +122,28 @@ namespace vparser {
   };
 
   class num_expr : public expression {
+    int size;
+    bool is_signed;
+    char radix;
+    std::string value;
+    
+    
   public:
+
+    num_expr(const std::string& value_) :
+      size(32), is_signed(false), radix('d'), value(value_) {}
+
+    num_expr(const int size_,
+             const char radix_,
+             const std::string& value_) :
+      size(size_), is_signed(false), radix(radix_), value(value_) {}
+
+    std::string to_string() const {
+      assert(!is_signed);
+
+      return std::to_string(size) + "'" + std::string(1, radix) + value;
+    }
+    
     virtual expression_type get_type() const {
       return EXPRESSION_NUM;
     }

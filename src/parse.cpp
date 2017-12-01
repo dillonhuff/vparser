@@ -229,13 +229,19 @@ namespace vparser {
 
         parse_token("'", ts);
 
+        string radix_value_str = ts.next();
+        cout << "radix_str = " << radix_value_str << endl;
+
+        char radix = radix_value_str[0];
+        string value = radix_value_str.substr(1);
+
         ts++;
 
-        expr = new num_expr();
+        expr = new num_expr(stoi(nx), radix, value);
       } else {
         parse_integer(ts);
 
-        expr = new num_expr();
+        expr = new num_expr(nx);
       }
     } else if (is_id(nx)) {
       ts++;

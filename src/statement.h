@@ -188,7 +188,7 @@ namespace vparser {
   public:
 
     case_stmt(const std::vector<std::pair<expression*, statement*>> inner_cases_) :
-      inner_cases(inner_cases_) {}
+      inner_cases(inner_cases_), default_stmt(nullptr) {}
 
     case_stmt(const std::vector<std::pair<expression*, statement*>> inner_cases_,
               statement* default_stmt_) :
