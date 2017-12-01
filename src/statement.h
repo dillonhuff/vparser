@@ -275,6 +275,12 @@ namespace vparser {
       return STATEMENT_BLOCKING_ASSIGN;
     }
 
+    std::string to_string(const int lvl) const {
+      std::string str =
+        indent(lvl) + lhs->to_string() + " = " + rhs->to_string() + ";";
+      return str;
+    }
+    
     virtual void print(std::ostream& out) const {
       out << " " << std::endl;
     }
@@ -304,6 +310,12 @@ namespace vparser {
       return STATEMENT_NON_BLOCKING_ASSIGN;
     }
 
+    std::string to_string(const int lvl) const {
+      std::string str =
+        indent(lvl) + lhs->to_string() + " <= " + rhs->to_string() + ";";
+      return str;
+    }
+    
     virtual void print(std::ostream& out) const {
       out << " " << std::endl;
     }
@@ -327,6 +339,21 @@ namespace vparser {
     call_stmt(const std::string& name_,
               const std::vector<expression*>& args_) : name(name_), args(args_) {}
 
+    std::string to_string(const int lvl) const {
+      std::string str =
+        indent(lvl) + "$" + name + "( ";
+
+      for (int i = 0; i < args.size(); i++) {
+        str += args[i]->to_string();
+
+        if (i < args.size() - 1) {
+          str += ", ";
+        }
+      }
+      str += ")";
+      return str;
+    }
+    
     statement_type get_type() const {
       return STATEMENT_CALL;
     }
