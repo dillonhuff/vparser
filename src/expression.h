@@ -5,6 +5,10 @@
 
 namespace vparser {
 
+  static inline std::string parens(const std::string& str) {
+    return "(" + str + ")";
+  }
+
   static inline std::string indent(const int indent_level) {
     std::string ind = "";
 
@@ -47,26 +51,44 @@ namespace vparser {
   };
 
   class unop_expr : public expression {
+
+    std::string op;
+    expression* operand0;
     
   public:
 
     unop_expr(const std::string& op_,
-              expression* const operand0_) {}
+              expression* const operand0_) : op(op_), operand0(operand0_) {}
+
     virtual expression_type get_type() const {
       return EXPRESSION_UNOP;
+    }
+
+    virtual std::string to_string() const {
+      return parens(op + " " + operand0->to_string());
     }
 
   };
   
   class binop_expr : public expression {
+
+    std::string op;
+    expression* operand0;
+    expression* operand1;
     
   public:
 
     binop_expr(const std::string& op_,
                expression* const operand0_,
-               expression* const operand1_) {}
+               expression* const operand1_) :
+      op(op_), operand0(operand0_), operand1(operand1_) {}
+
     virtual expression_type get_type() const {
       return EXPRESSION_BINOP;
+    }
+
+    virtual std::string to_string() const {
+      return parens(operand0->to_string() + " " + op + " " + operand1->to_string());
     }
 
   };
@@ -116,6 +138,9 @@ namespace vparser {
       return EXPRESSION_ID;
     }
 
+    virtual std::string to_string() const {
+      return name;
+    }
 
     std::string get_name() const { return name; }
   };
@@ -143,6 +168,10 @@ namespace vparser {
 
     expression* get_arg() const { return arg; }
 
+    virtual std::string to_string() const {
+      return parens(get_arg()->to_string() + "[ " + get_start()->to_string() + " : " + get_end()->to_string() + " ]");
+    }
+    
   };
   
 }
