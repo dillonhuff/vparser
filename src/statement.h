@@ -43,7 +43,7 @@ namespace vparser {
     }
 
     std::string to_string(const int lvl) const {
-      std::string str = "DECLARATION";
+      std::string str = indent(lvl) + "DECLARATION";
       return str;
     }
     
@@ -162,9 +162,9 @@ namespace vparser {
     std::string to_string(const int lvl) const {
       std::string str = indent(lvl) + "begin\n";
       for (auto& stmt : get_statements()) {
-        str += stmt->to_string(lvl + 1);
+        str += stmt->to_string(lvl + 1) + "\n";
       }
-      str += "\n" + indent(lvl) + "end";
+      str += "\n" + indent(lvl) + "end\n";
       return str;
     }
     
@@ -198,6 +198,22 @@ namespace vparser {
       return STATEMENT_CASE;
     }
 
+    std::string to_string(const int lvl) const {
+      std::string str = indent(lvl) + "case (CASE EXPR)\n";
+
+      for (auto& cs : inner_cases) {
+        str += indent(lvl + 1) + cs.first->to_string() + ": " + cs.second->to_string(0) + "\n";
+      }
+
+      if (default_stmt != nullptr) {
+        str += indent(lvl + 1) + "default: " + default_stmt->to_string(0) + "\n";
+      }
+
+      str += "\n" + indent(lvl) + "endcase\n";
+
+      return str;
+    }
+    
     std::vector<std::pair<expression*, statement*> >
     get_cases() const {
       return inner_cases;
@@ -230,7 +246,7 @@ namespace vparser {
 
     std::string to_string(const int lvl) const {
       std::string str =
-        indent(lvl) + "assign " + lhs->to_string() + " = " + rhs->to_string();
+        indent(lvl) + "assign " + lhs->to_string() + " = " + rhs->to_string() + ";";
       return str;
     }
     
