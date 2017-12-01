@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 namespace vparser {
 
@@ -11,13 +12,24 @@ namespace vparser {
     EXPRESSION_STRING_LITERAL,
     EXPRESSION_UNOP,
     EXPRESSION_BINOP,
-    EXPRESSION_TRINOP
+    EXPRESSION_TRINOP,
+    EXPRESSION_CONCAT
   };
 
   class expression {
   public:
 
     virtual expression_type get_type() const = 0;
+  };
+
+  class concat_expr : public expression {
+  public:
+    concat_expr(const std::vector<expression*> exprs) {}
+
+    virtual expression_type get_type() const {
+      return EXPRESSION_CONCAT;
+    }
+    
   };
 
   class unop_expr : public expression {
