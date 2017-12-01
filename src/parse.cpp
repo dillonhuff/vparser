@@ -134,7 +134,9 @@ namespace vparser {
 
     cout << "Start parsing condition" << endl;
 
+    parse_token("(", ts);
     expression* condition = parse_expression(ts);
+    parse_token(")", ts);
 
     cout << "Got condition" << endl;
 
@@ -272,7 +274,8 @@ namespace vparser {
       (nx == "<") ||
       (nx == ">") ||
       (nx == "<=") ||
-      (nx == ">=");
+      (nx == ">=") ||
+      (nx == "!=");
       
   }
 
@@ -537,6 +540,8 @@ namespace vparser {
       assert(false);
     } else if (ns == "case") {
       return parse_case(ts);
+    } else if (ns == "{") {
+      return parse_non_blocking_assign(ts);
     } else if (isalpha(ns[0]) || (ns[0] == '_')) {
       string nn = ts.next(1);
 

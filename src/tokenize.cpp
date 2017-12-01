@@ -201,6 +201,12 @@ namespace vparser {
       return res;
     }
 
+    if (ps.next() == '=') {
+      res += ps.next();
+      ps++;
+      return res;
+    }
+    
     return res;
   }
 
