@@ -39,19 +39,40 @@ namespace vparser {
 
     std::string category;
     std::string storage_type;
+    expression* w_start;
+    expression* w_end;
+    std::string name;
+    expression* init_value;
 
   public:
 
     decl_stmt(const std::string& category_,
-              const std::string& storage_type_) :
-      category(category_), storage_type(storage_type_) {}
+              const std::string& storage_type_,
+              expression* const w_start_,
+              expression* const w_end_,
+              const std::string& name_,
+              expression* const init_value_) :
+      category(category_), storage_type(storage_type_), w_start(w_start_), w_end(w_end_), name(name_), init_value(init_value_) {}
 
     statement_type get_type() const {
       return STATEMENT_DECL;
     }
 
     std::string to_string(const int lvl) const {
-      std::string str = indent(lvl) + category + " " + storage_type + ";";
+      std::string str = indent(lvl) + category;
+
+      if ((w_end != nullptr) &&
+          (w_start != nullptr)) {
+        str +=  " [ " + w_end->to_string() + " : " + w_start->to_string() + " ] ";
+      }
+
+      str += storage_type + " " + name;
+      if (init_value != nullptr) {
+        str += " = " + init_value->to_string();
+      }
+
+      str += ";";
+        
       return str;
     }
     

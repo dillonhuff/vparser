@@ -100,6 +100,8 @@ namespace vparser {
   }
 
   statement* parse_declaration(token_stream& ts) {
+    //cout << "Parsing declartion = " << ts.remaining_string() << endl;
+
     string ns = ts.next();
 
     string category = "input";
@@ -108,24 +110,64 @@ namespace vparser {
       ts++;
     }
 
+    cout << "category = " << category << endl;
+    //cout << "after category decl = " << ts.remaining_string() << endl;
+
+    ns = ts.next();
+
     string storageType = "wire";
+    cout << "ns == " << ns << endl;
     if ((ns == "reg") || (ns == "wire")) {
       storageType = ns;
       ts++;
     }
 
     cout << "storageType = " << storageType << endl;
-    
-    vector<string> declStrs;
-    while (ts.next() != ";") {
-      declStrs.push_back(ts.next());
-      ts++;
+
+    expression* width_start = nullptr;
+    expression* width_end = nullptr;
+      
+    if (ts.next() == "[") {
+      parse_token("[", ts);
+
+      cout << "Parsing declartion width = " << ts.remaining_string() << endl;
+
+      width_end = parse_expression(ts);
+
+      parse_token(":", ts);
+
+      width_start = parse_expression(ts);
+
+      parse_token("]", ts);
+      
     }
 
-    assert(ts.next() == ";");
+    string name = ts.next();
     ts++;
 
-    return new decl_stmt(category, storageType);
+    if (ts.next() == ";") {
+      parse_token(";", ts);
+
+      return new decl_stmt(category,
+                           storageType,
+                           width_start,
+                           width_end,
+                           name,
+                           nullptr);
+    }
+
+    parse_token("=", ts);
+
+    auto init_value = parse_expression(ts);
+
+    return new decl_stmt(category,
+                           storageType,
+                           width_start,
+                           width_end,
+                           name,
+                           init_value);
+    
+    parse_token(";", ts);
     
   }
 
@@ -221,7 +263,7 @@ namespace vparser {
 
     parse_token(";", ts);
 
-    return new decl_stmt("DUMMY", "DUMMY"); //{};
+    return new decl_stmt("DUMMY", "DUMMY", nullptr, nullptr, "DUMMY", nullptr);
   }
 
   int parse_integer(token_stream& ts) {
