@@ -36,14 +36,22 @@ namespace vparser {
   };
 
   class decl_stmt : public statement {
+
+    std::string category;
+    std::string storage_type;
+
   public:
+
+    decl_stmt(const std::string& category_,
+              const std::string& storage_type_) :
+      category(category_), storage_type(storage_type_) {}
 
     statement_type get_type() const {
       return STATEMENT_DECL;
     }
 
     std::string to_string(const int lvl) const {
-      std::string str = indent(lvl) + "DECLARATION";
+      std::string str = indent(lvl) + category + " " + storage_type + ";";
       return str;
     }
     

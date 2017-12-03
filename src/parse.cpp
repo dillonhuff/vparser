@@ -65,7 +65,7 @@ namespace vparser {
     return strs;
   }
 
-  statement*
+  void
   parse_enclosed_tokens(const std::string& start,
 			const std::string& end,
 			token_stream& ts) {
@@ -82,7 +82,7 @@ namespace vparser {
     assert(ts.next() == end);
     ts++;
 
-    return new decl_stmt();
+    return;
   }
 
   statement* parse_always(token_stream& ts) {
@@ -102,6 +102,20 @@ namespace vparser {
   statement* parse_declaration(token_stream& ts) {
     string ns = ts.next();
 
+    string category = "input";
+    if ((ns == "input") || (ns == "output")) {
+      category = ns;
+      ts++;
+    }
+
+    string storageType = "wire";
+    if ((ns == "reg") || (ns == "wire")) {
+      storageType = ns;
+      ts++;
+    }
+
+    cout << "storageType = " << storageType << endl;
+    
     vector<string> declStrs;
     while (ts.next() != ";") {
       declStrs.push_back(ts.next());
@@ -111,7 +125,7 @@ namespace vparser {
     assert(ts.next() == ";");
     ts++;
 
-    return new decl_stmt(); //declStrs;
+    return new decl_stmt(category, storageType);
     
   }
 
@@ -207,7 +221,7 @@ namespace vparser {
 
     parse_token(";", ts);
 
-    return new decl_stmt(); //{};
+    return new decl_stmt("DUMMY", "DUMMY"); //{};
   }
 
   int parse_integer(token_stream& ts) {
