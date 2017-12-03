@@ -42,13 +42,28 @@ namespace vparser {
   };
 
   class concat_expr : public expression {
+    std::vector<expression*> exprs;
+
   public:
-    concat_expr(const std::vector<expression*> exprs) {}
+    concat_expr(const std::vector<expression*> exprs_) : exprs(exprs_) {}
 
     virtual expression_type get_type() const {
       return EXPRESSION_CONCAT;
     }
-    
+
+    virtual std::string to_string() const {
+      std::string str = "{ ";
+
+      for (unsigned i = 0; i < exprs.size(); i++) {
+        str += exprs[i]->to_string();
+        if (i < exprs.size() - 1) {
+          str += ", ";
+        }
+      }
+
+      str += " }";
+      return str;
+    }
   };
 
   class unop_expr : public expression {
@@ -95,18 +110,30 @@ namespace vparser {
   };
 
   class trinop_expr : public expression {
+
+    std::string op;
+    expression* operand0;
+    expression* operand1;
+    expression* operand2;
     
   public:
 
     trinop_expr(const std::string& op_,
                 expression* const operand0_,
                 expression* const operand1_,
-                expression* const operand2_) {}
+                expression* const operand2_) :
+      op(op_), operand0(operand0_), operand1(operand1_), operand2(operand2_) {}
 
     virtual expression_type get_type() const {
       return EXPRESSION_TRINOP;
     }
 
+    virtual std::string to_string() const {
+      assert(op == "?");
+
+      return parens(operand0->to_string() + " ? " + operand1->to_string() + " : " + operand2->to_string());
+    }
+    
   };
   
   class string_literal_expr : public expression {
