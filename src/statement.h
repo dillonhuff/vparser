@@ -88,7 +88,23 @@ namespace vparser {
   };
 
   std::ostream& operator<<(std::ostream& out, const statement& stmt);
-  
+
+  static inline std::string signal_edge_to_string(const signal_edge edge) {
+    switch (edge) {
+    case SIGNAL_POSEDGE:
+      return "posedge";
+
+    case SIGNAL_NEGEDGE:
+      return "negedge";
+
+    case SIGNAL_STAR:
+      return "*";
+
+    default:
+      assert(false);
+    }
+  }
+
   class always_stmt : public statement {
 
     std::vector<std::pair<signal_edge, std::string> > sensitivity_list;
@@ -110,7 +126,18 @@ namespace vparser {
 
     std::string to_string(const int lvl) const {
       std::string str =
-        indent(lvl) + "always @(INSERT TOKENS)\n" +
+        indent(lvl) + "always @(";
+        
+        for (int i = 0; i < sensitivity_list.size(); i++) {
+          auto& value_pair = sensitivity_list[i];
+
+          str += signal_edge_to_string(value_pair.first) + " " + value_pair.second;
+
+          if (i < sensitivity_list.size() - 1) {
+            str += " or ";
+          }
+        }
+        str += ")\n" +
         get_statement()->to_string(lvl + 1);
       return str;
     }

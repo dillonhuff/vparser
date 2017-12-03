@@ -637,13 +637,45 @@ namespace vparser {
 
       if (is_id(nn)) {
         return parse_module_instantiation(ts);
-      } else if (nn == "=") {
-        return parse_blocking_assign(ts);
-      } else if (nn == "<=") {
-        return parse_non_blocking_assign(ts);
+      } else {
+
+        expression* lhs = parse_expression(ts);
+
+        nn = ts.next();
+
+        if (nn == "=") {
+          parse_token("=", ts);
+
+          expression* rhs = parse_expression(ts);
+
+          parse_token(";", ts);
+
+          return new blocking_assign_stmt(lhs, rhs);
+
+        } else if (nn == "<=") {
+          parse_token("<=", ts);
+
+          expression* rhs = parse_expression(ts);
+
+          parse_token(";", ts);
+
+          return new non_blocking_assign_stmt(lhs, rhs);
+
+        }
+
+        
       }
 
-      return parse_id_statement(ts);
+      assert(false);
+      // if (is_id(nn)) {
+      //   return parse_module_instantiation(ts);
+      // } else if (nn == "=") {
+      //   return parse_blocking_assign(ts);
+      // } else if (nn == "<=") {
+      //   return parse_non_blocking_assign(ts);
+      // }
+
+      // return parse_id_statement(ts);
 
     } else if (ns == ";") {
       ts++;

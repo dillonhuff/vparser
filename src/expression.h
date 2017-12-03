@@ -142,6 +142,10 @@ namespace vparser {
   public:
     string_literal_expr(const std::string& str_) : str(str_) {}
 
+    virtual std::string to_string() const {
+      return str;
+    }
+    
     virtual expression_type get_type() const {
       return EXPRESSION_STRING_LITERAL;
     }
