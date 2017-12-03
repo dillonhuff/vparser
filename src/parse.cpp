@@ -130,7 +130,7 @@ namespace vparser {
     if (ts.next() == "[") {
       parse_token("[", ts);
 
-      cout << "Parsing declartion width = " << ts.remaining_string() << endl;
+      //cout << "Parsing declartion width = " << ts.remaining_string() << endl;
 
       width_end = parse_expression(ts);
 

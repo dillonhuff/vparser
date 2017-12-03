@@ -74,18 +74,18 @@ namespace vparser {
     }
 
     std::string to_string() {
-      std::string str = "module " + name + "(";
+      std::string str = "module " + name + "(\n";
 
       auto ports = get_port_names();
       for (int i = 0; i < ports.size(); i++) {
-        str += ports[i];
+        str += indent(1) + ports[i];
 
         if (i < ports.size() - 1) {
-          str += ", ";
+          str += ",\n";
         }
       }
 
-      str += ");";
+      str += ");\n\n";
 
       for (auto& stmt : get_statements()) {
         str += stmt->to_string(1) + "\n";

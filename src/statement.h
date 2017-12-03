@@ -59,11 +59,11 @@ namespace vparser {
     }
 
     std::string to_string(const int lvl) const {
-      std::string str = indent(lvl) + category;
+      std::string str = indent(lvl) + category + " ";
 
       if ((w_end != nullptr) &&
           (w_start != nullptr)) {
-        str +=  " [ " + w_end->to_string() + " : " + w_start->to_string() + " ] ";
+        str +=  "[ " + w_end->to_string() + " : " + w_start->to_string() + " ] ";
       }
 
       str += storage_type + " " + name;
