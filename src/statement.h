@@ -21,6 +21,12 @@ namespace vparser {
     STATEMENT_CALL
   };
 
+  enum signal_edge {
+    SIGNAL_POSEDGE,
+    SIGNAL_NEGEDGE,
+    SIGNAL_STAR,
+  };
+
   class statement {
   public:
 
@@ -85,14 +91,14 @@ namespace vparser {
   
   class always_stmt : public statement {
 
-    //std::vector<statement*> stmts;
-
+    std::vector<std::pair<signal_edge, std::string> > sensitivity_list;
     statement* stmt;
 
   public:
 
-    //always_stmt(const std::vector<statement*>& stmts_) : stmts(stmts_) {}
-    always_stmt(statement* const stmt_) : stmt(stmt_) {}
+    always_stmt(const std::vector<std::pair<signal_edge, std::string> >& sensitivity_list_,
+                statement* const stmt_) :
+      sensitivity_list(sensitivity_list_), stmt(stmt_) {}
 
     statement_type get_type() const {
       return STATEMENT_ALWAYS;

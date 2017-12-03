@@ -92,11 +92,39 @@ namespace vparser {
 
     parse_token("@", ts);
 
-    parse_enclosed_tokens("(", ")", ts);
+    vector<pair<signal_edge, string> > sensitivity_list;
+    parse_token("(", ts);
+
+    while (true) {
+      if (ts.next() == "posedge") {
+        ts++;
+        sensitivity_list.push_back({SIGNAL_POSEDGE, ts.next()});
+        ts++;
+      } else if (ts.next() == "negedge") {
+        ts++;
+        sensitivity_list.push_back({SIGNAL_NEGEDGE, ts.next()});
+        ts++;
+      } else if (ts.next() == "*") {
+        ts++;
+        sensitivity_list.push_back({SIGNAL_STAR, ""});
+      } else if (ts.next() == "or") {
+        ts++;
+      } else {
+        cout << "Unexpected token in sensitivity list = " << ts.remaining_string() << endl;
+        assert(false);
+      }
+
+      if (ts.next() == ")") {
+        break;
+      }
+
+    }
+    
+    parse_token(")", ts);
 
     statement* stmt = parse_statement(ts);
 
-    return new always_stmt(stmt);
+    return new always_stmt(sensitivity_list, stmt);
   }
 
   statement* parse_declaration(token_stream& ts) {
