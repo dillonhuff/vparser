@@ -694,7 +694,7 @@ namespace vparser {
   }
 
   verilog_module parse_module(const string& mod_string) {
-    vector<string> tokens = tokenize(mod_string);
+    vector<token> tokens = tokenize(mod_string);
 
     token_stream ts(tokens);
     parse_token("module", ts);

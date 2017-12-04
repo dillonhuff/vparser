@@ -7,7 +7,6 @@ using namespace std;
 
 namespace vparser {
 
-
   struct parse_state {
     const std::string& code;
     int i;
@@ -235,8 +234,8 @@ namespace vparser {
 
   }
 
-  std::vector<std::string> tokenize(const std::string& verilog_code) {
-    vector<string> tokens;
+  std::vector<token> tokenize(const std::string& verilog_code) {
+    vector<token> tokens;
     int i = 0;
 
     parse_state ps(verilog_code);
@@ -309,7 +308,7 @@ namespace vparser {
 	assert(false);
       }
 
-      tokens.push_back(nextTok);
+      tokens.push_back(token(nextTok, source_position(1, 1)));
 
       i++;
     }
