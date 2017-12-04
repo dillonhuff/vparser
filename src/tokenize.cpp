@@ -7,14 +7,15 @@ using namespace std;
 
 namespace vparser {
 
-  
+
   struct parse_state {
     const std::string& code;
     int i;
     int lineNo;
+    int linePos;
 
   public:
-    parse_state(const std::string& str) : code(str), i(0), lineNo(1) {}
+    parse_state(const std::string& str) : code(str), i(0), lineNo(1), linePos(1) {}
 
     bool chars_left() const {
       return code.size() - i > 0;
@@ -30,6 +31,9 @@ namespace vparser {
     parse_state operator++(int) {
       if (next() == '\n') {
       	lineNo++;
+        linePos = 1;
+      } else {
+        linePos++;
       }
 
       i++;
