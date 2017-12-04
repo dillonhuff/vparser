@@ -30,7 +30,7 @@ namespace vparser {
 
     cout << "TOKENS: ";
     for (auto& t : toks) {
-      cout << t << " ";
+      cout << t.get_text() << " ";
     }
     cout << endl;
     token_stream ts(toks);
@@ -50,7 +50,7 @@ namespace vparser {
 
     cout << "TOKENS: ";
     for (auto& t : toks) {
-      cout << t << " ";
+      cout << t.get_text() << " ";
     }
     cout << endl;
     token_stream ts(toks);

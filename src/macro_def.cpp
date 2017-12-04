@@ -68,7 +68,7 @@ namespace vparser {
 
   std::string preprocess_text(const std::string& text,
                               const std::vector<macro_def>& defs) {
-    vector<string> tokens = tokenize(text);
+    vector<token> tokens = tokenize(text);
     token_stream ts(tokens);
 
     vector<string> preprocessed_tokens;
@@ -160,9 +160,9 @@ namespace vparser {
     for (auto& line : lines) {
       if (line[0] == '`') {
 
-        vector<string> toks = tokenize(line);
+        vector<token> toks = tokenize(line);
 
-        if ((toks[0] == "`") && (toks[1] == "define")) {
+        if ((toks[0].get_text() == "`") && (toks[1].get_text() == "define")) {
           cout << "MACRO: " << line << endl;
           token_stream ts(toks);
           ts++;

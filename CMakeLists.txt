@@ -14,7 +14,8 @@ SET(SRC_FILES ./src/tokenize.cpp
 	      ./src/parse.cpp
               ./src/statement.cpp
               ./src/expression.cpp
-              ./src/macro_def.cpp)
+              ./src/macro_def.cpp
+              ./src/token.cpp)
 
 SET(TEST_FILES ./test/tokenization_tests.cpp
                ./test/expression_parse_tests.cpp

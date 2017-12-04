@@ -4,16 +4,17 @@
 #include <vector>
 
 #include "statement.h"
+#include "token.h"
 
 namespace vparser {
 
   class token_stream {
   protected:
-    const std::vector<std::string>& toks;
+    const std::vector<token>& toks;
     int i;
 
   public:
-    token_stream(const std::vector<std::string>& toks_) : toks(toks_), i(0) {}
+    token_stream(const std::vector<token>& toks_) : toks(toks_), i(0) {}
 
     bool chars_left() const {
       return toks.size() - i > 0;
@@ -30,7 +31,7 @@ namespace vparser {
     std::string remaining_string() const {
       std::string rem = "";
       for (int ind = i; ind < toks.size(); ind++) {
-        rem += toks[ind] + " ";
+        rem += toks[ind].get_text() + " ";
       }
       return rem;
     }
@@ -40,9 +41,9 @@ namespace vparser {
       return *this;
     }
 
-    std::string next() const { return toks[i]; }
+    std::string next() const { return toks[i].get_text(); }
 
-    std::string next(const int off) const { return toks[i + off]; }
+    std::string next(const int off) const { return toks[i + off].get_text(); }
     
   };
 

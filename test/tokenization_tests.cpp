@@ -10,7 +10,7 @@ namespace vparser {
 
   TEST_CASE("Empty string") {
     string test_str = "";
-    vector<string> tokens = tokenize(test_str);
+    vector<token> tokens = tokenize(test_str);
 
     REQUIRE(tokens.size() == 0);
     
@@ -18,40 +18,40 @@ namespace vparser {
   
   TEST_CASE("Empty module") {
     string test_str = "module(); endmodule";
-    vector<string> tokens = tokenize(test_str);
+    vector<token> tokens = tokenize(test_str);
 
     REQUIRE(tokens.size() == 5);
   }
 
   TEST_CASE("Logical and") {
     string test_str = "a && b";
-    vector<string> toks = tokenize(test_str);
+    vector<token> toks = tokenize(test_str);
 
-    REQUIRE(toks[1] == "&&");
+    REQUIRE(toks[1].get_text() == "&&");
   }
 
   TEST_CASE("Comment line") {
     string test_str = " \n // Hello this is a comment string // asdf\n asdf //";
-    vector<string> tokens = tokenize(test_str);
+    vector<token> tokens = tokenize(test_str);
 
     REQUIRE(tokens.size() == 1);
   }
 
   TEST_CASE("Equals sign") {
-    vector<string> tokens = tokenize("assign a = b;");
-    REQUIRE(tokens[2] == "=");
+    vector<token> tokens = tokenize("assign a = b;");
+    REQUIRE(tokens[2].get_text() == "=");
     REQUIRE(tokens.size() == 5);
   }
 
   TEST_CASE("Equals sign with strange ending") {
-    vector<string> tokens = tokenize("assign a = b;\n\n  ");
-    REQUIRE(tokens[2] == "=");
+    vector<token> tokens = tokenize("assign a = b;\n\n  ");
+    REQUIRE(tokens[2].get_text() == "=");
     REQUIRE(tokens.size() == 5);
   }
   
   TEST_CASE("Multiple comments in a row") {
     string test_str = " \n // Hello this is a comment string \n// ";
-    vector<string> tokens = tokenize(test_str);
+    vector<token> tokens = tokenize(test_str);
 
     REQUIRE(tokens.size() == 0);
   }
@@ -61,7 +61,7 @@ namespace vparser {
     std::string str((std::istreambuf_iterator<char>(t)),
 		    std::istreambuf_iterator<char>());
 
-    vector<string> tokens = tokenize(str);
+    vector<token> tokens = tokenize(str);
 
     REQUIRE(tokens.size() > 0);
   }
@@ -78,7 +78,7 @@ namespace vparser {
     string str = "config_cb == 32'd0";
     auto toks = tokenize(str);
 
-    REQUIRE(toks[1] == "==");
+    REQUIRE(toks[1].get_text() == "==");
 
   }
 
@@ -86,21 +86,21 @@ namespace vparser {
     string str = "config_cb <= 32'd0;";
     auto toks = tokenize(str);
 
-    REQUIRE(toks[1] == "<=");
+    REQUIRE(toks[1].get_text() == "<=");
   }
 
   TEST_CASE(">= operator") {
     string str = "config_cb >= 32'd0;";
     auto toks = tokenize(str);
 
-    REQUIRE(toks[1] == ">=");
+    REQUIRE(toks[1].get_text() == ">=");
   }
   
   TEST_CASE("Module with number in name") {
     string str = "module cb_unq1() endmodule";
     auto toks = tokenize(str);
 
-    REQUIRE(toks[1] == "cb_unq1");
+    REQUIRE(toks[1].get_text() == "cb_unq1");
   }
 
   TEST_CASE("Parse text with string") {
@@ -108,7 +108,7 @@ namespace vparser {
 
     cout << "Parse tex tokens" << endl;
     for (auto& tk : tokenize(str)) {
-      cout << tk << endl;
+      cout << tk.get_text() << endl;
     }
 
     REQUIRE(tokenize(str).size() == 8);
@@ -118,7 +118,7 @@ namespace vparser {
     string str = "\"hello\"";
     auto toks = tokenize(str);
 
-    REQUIRE(toks[0] == "\"hello\"");
+    REQUIRE(toks[0].get_text() == "\"hello\"");
   }
 
 }
