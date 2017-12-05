@@ -47,6 +47,13 @@ namespace vparser {
     vector<token> tokens = tokenize("assign a = b;\n\n  ");
     REQUIRE(tokens[2].get_text() == "=");
     REQUIRE(tokens.size() == 5);
+
+    REQUIRE(tokens[0].get_pos().lineNo == 1);
+    REQUIRE(tokens[0].get_pos().linePos == 1);
+
+    REQUIRE(tokens[1].get_pos().lineNo == 1);
+    REQUIRE(tokens[1].get_pos().linePos == 8);
+
   }
   
   TEST_CASE("Multiple comments in a row") {

@@ -26,6 +26,7 @@ namespace vparser {
     
     int index() const { return i; }
     int lineNumber() const { return lineNo; }
+    int line_pos() const { return linePos; }
 
     parse_state operator++(int) {
       if (next() == '\n') {
@@ -250,6 +251,8 @@ namespace vparser {
 
       char c = ps.next();
 
+      int line_no = ps.lineNumber();
+      int line_pos = ps.line_pos();
       string nextTok;
       if (isalpha(c)) {
 	nextTok = parse_name(ps);
@@ -308,7 +311,7 @@ namespace vparser {
 	assert(false);
       }
 
-      tokens.push_back(token(nextTok, source_position(1, 1)));
+      tokens.push_back(token(nextTok, source_position(line_no, line_pos)));
 
       i++;
     }
