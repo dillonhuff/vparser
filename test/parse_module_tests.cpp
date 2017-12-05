@@ -123,6 +123,12 @@ namespace vparser {
     
   }
 
+  TEST_CASE("Parse module with parameters") {
+    string str = "module corebit_const #(parameter value=1) ( output out ); assign out = value; endmodule //corebit_const";
+
+    verilog_module vm = parse_module(str);
+  }
+
   TEST_CASE("Non blocking assignment") {
     string str = "config_cb <= 32'd0;";
     auto toks = tokenize(str);
