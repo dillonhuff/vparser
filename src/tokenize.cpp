@@ -287,6 +287,9 @@ namespace vparser {
       } else if (is_boolop(c) && !is_boolop(ps.next(1))) {
 	nextTok = string(1, c);
 	ps++;
+      } else if (c == '#') {
+        nextTok = "#";
+        ps++;
       } else if (c == '&') {
         assert(ps.next(1) == '&');
         nextTok = "&&";

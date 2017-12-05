@@ -702,6 +702,10 @@ namespace vparser {
     string mod_name = ts.next();
     ts++;
 
+    if (ts.next() == "#") {
+      assert(false);
+    }
+
     vector<string> port_names =
       parse_token_list("(", ")", ",", ts);
 
