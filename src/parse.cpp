@@ -702,8 +702,38 @@ namespace vparser {
     string mod_name = ts.next();
     ts++;
 
+    vector<pair<string, expression*> > params;
     if (ts.next() == "#") {
-      assert(false);
+      ts++;
+
+      parse_token("(", ts);
+
+      while (true) {
+        if (ts.next() == "parameter") {
+          ts++;
+
+          string name = ts.next();
+          ts++;
+
+          parse_token("=", ts);
+
+          expression* value = parse_expression(ts);
+
+          params.push_back({name, value});
+        }
+
+        if (ts.next() == ",") {
+          ts++;
+        }
+        if (ts.next() == ")") {
+          break;
+        }
+      }
+    }
+
+    cout << "Params" << endl;
+    for (auto& param : params) {
+      cout << param.first << " = " << param.second->to_string() << endl;
     }
 
     vector<string> port_names =
