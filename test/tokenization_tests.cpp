@@ -55,7 +55,29 @@ namespace vparser {
     REQUIRE(tokens[1].get_pos().linePos == 8);
 
   }
-  
+
+  // TODO: Make this a test case
+  // assign out_3_4 = config_sb[79]?out_3_4_id1:out_3_4_i; 
+
+  TEST_CASE("Assign with floating point numbers") {
+    string test_str = "assign #0.1 clk_d = clk;";
+
+    vector<token> tokens = tokenize(test_str);
+
+    cout << "Tokens = " << endl;
+    for (auto& tok : tokens) {
+      cout << tok.get_text() << " ";
+    }
+    cout << endl;
+
+    REQUIRE(tokens[1].get_text() == "#");
+    REQUIRE(tokens[2].get_text() == "0");
+    REQUIRE(tokens[3].get_text() == ".");
+    REQUIRE(tokens[4].get_text() == "1");
+
+    REQUIRE(tokens.size() == 9);
+  }
+
   TEST_CASE("Multiple comments in a row") {
     string test_str = " \n // Hello this is a comment string \n// ";
     vector<token> tokens = tokenize(test_str);

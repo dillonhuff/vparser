@@ -376,6 +376,15 @@ namespace vparser {
         ts++;
 
         expr = new num_expr(stoi(nx), radix, value);
+      } else if (ts.next(1) == ".") {
+        ts++;
+        ts++;
+        string num_str = nx + "." + ts.next();
+        ts++;
+        cout << "Parsing number = " << num_str << endl;
+        double num = stod(num_str);
+
+        expr = new float_expr(num);
       } else {
         parse_integer(ts);
 
@@ -625,6 +634,14 @@ namespace vparser {
   statement* parse_assign(token_stream& ts) {
     parse_token("assign", ts);
 
+    if (ts.next() == "#") {
+      ts++;
+      // TODO: Include this delay as assign parameter
+      parse_basic_expression(ts);
+
+      cout << "after parsing # remainder: " << ts.remaining_string() << endl;
+    }
+
     expression* lhs = parse_expression(ts);
 
     parse_token("=", ts);
@@ -638,17 +655,17 @@ namespace vparser {
     return new assign_stmt(lhs, rhs);
   }
 
-  statement* parse_blocking_assign(token_stream& ts) {
-    expression* lhs = parse_expression(ts);
+  // statement* parse_blocking_assign(token_stream& ts) {
+  //   expression* lhs = parse_expression(ts);
 
-    parse_token("=", ts);
+  //   parse_token("=", ts);
 
-    expression* rhs = parse_expression(ts);
+  //   expression* rhs = parse_expression(ts);
 
-    parse_token(";", ts);
+  //   parse_token(";", ts);
 
-    return new blocking_assign_stmt(lhs, rhs);
-  }
+  //   return new blocking_assign_stmt(lhs, rhs);
+  // }
 
   statement* parse_non_blocking_assign(token_stream& ts) {
     //cout << "Parsing non blocking assign, string = " << ts.remaining_string() << endl;
@@ -693,6 +710,12 @@ namespace vparser {
         return parse_module_instantiation(ts);
       } else {
 
+        // Parse assignment
+
+        if (ts.next() == "#") {
+          assert(false);
+        }
+
         expression* lhs = parse_expression(ts);
 
         nn = ts.next();
@@ -721,15 +744,6 @@ namespace vparser {
       }
 
       assert(false);
-      // if (is_id(nn)) {
-      //   return parse_module_instantiation(ts);
-      // } else if (nn == "=") {
-      //   return parse_blocking_assign(ts);
-      // } else if (nn == "<=") {
-      //   return parse_non_blocking_assign(ts);
-      // }
-
-      // return parse_id_statement(ts);
 
     } else if (ns == ";") {
       ts++;

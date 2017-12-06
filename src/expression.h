@@ -28,7 +28,8 @@ namespace vparser {
     EXPRESSION_UNOP,
     EXPRESSION_BINOP,
     EXPRESSION_TRINOP,
-    EXPRESSION_CONCAT
+    EXPRESSION_CONCAT,
+    EXPRESSION_FLOAT
   };
 
   class expression {
@@ -41,6 +42,22 @@ namespace vparser {
     }
   };
 
+  class float_expr : public expression {
+    double val;
+
+  public:
+
+    float_expr(const double val_) : val(val_) {}
+
+    virtual expression_type get_type() const {
+      return EXPRESSION_FLOAT;
+    }
+
+    virtual std::string to_string() const {
+      return std::to_string(val);
+    }
+  };
+  
   class concat_expr : public expression {
     std::vector<expression*> exprs;
 

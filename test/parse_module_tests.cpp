@@ -27,6 +27,14 @@ namespace vparser {
     REQUIRE(vm.get_port_names().size() == 3);
   }
 
+  TEST_CASE("Assign statement with delay") {
+    string str = "assign #0.1 clk_d = clk;";
+
+    statement* stmt = parse_statement(str);
+
+    REQUIRE(stmt->get_type() == STATEMENT_ASSIGN);
+  }
+
   TEST_CASE("Module instantiation statement") {
     string str = "mem_unq1  mem_inst0\n(\n.data_out(mem_data_out0),\n.data_in(mem_data_in0),\n.clk(gclk),\n.cen(int_cen),\n.wen(int_wen),\n.addr(mem_addr[8:0])\n);";
 

@@ -57,7 +57,7 @@ input [8:0] addr;
 
 wire clk_d;
 
-//assign #0.1 clk_d = clk;
+assign #0.1 clk_d = clk;
 
 sram_512w_16b mem_inst(
 .Q(data_out), 
