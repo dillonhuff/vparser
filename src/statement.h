@@ -64,6 +64,10 @@ namespace vparser {
       return STATEMENT_DECL;
     }
 
+    std::string get_name() const {
+      return name;
+    }
+
     std::string to_string(const int lvl) const {
       std::string str = indent(lvl) + category + " ";
 

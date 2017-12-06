@@ -127,7 +127,7 @@ namespace vparser {
     return new always_stmt(sensitivity_list, stmt);
   }
 
-  statement* parse_declaration(token_stream& ts) {
+  decl_stmt* parse_declaration(token_stream& ts) {
     //cout << "Parsing declartion = " << ts.remaining_string() << endl;
 
     string ns = ts.next();
@@ -199,6 +199,60 @@ namespace vparser {
     
   }
 
+  decl_stmt* parse_port_declaration(token_stream& ts) {
+    //cout << "Parsing declartion = " << ts.remaining_string() << endl;
+
+    string ns = ts.next();
+
+    string category = "input";
+    if ((ns == "input") || (ns == "output")) {
+      category = ns;
+      ts++;
+    }
+
+    cout << "category = " << category << endl;
+    //cout << "after category decl = " << ts.remaining_string() << endl;
+
+    ns = ts.next();
+
+    string storageType = "wire";
+    cout << "ns == " << ns << endl;
+    if ((ns == "reg") || (ns == "wire")) {
+      storageType = ns;
+      ts++;
+    }
+
+    cout << "storageType = " << storageType << endl;
+
+    expression* width_start = nullptr;
+    expression* width_end = nullptr;
+      
+    if (ts.next() == "[") {
+      parse_token("[", ts);
+
+      //cout << "Parsing declartion width = " << ts.remaining_string() << endl;
+
+      width_end = parse_expression(ts);
+
+      parse_token(":", ts);
+
+      width_start = parse_expression(ts);
+
+      parse_token("]", ts);
+      
+    }
+
+    string name = ts.next();
+    ts++;
+
+    return new decl_stmt(category,
+                         storageType,
+                         width_start,
+                         width_end,
+                         name,
+                         nullptr);
+  }
+  
   statement* parse_stmt_block(token_stream& ts) {
     parse_token("begin", ts);
 
@@ -726,6 +780,7 @@ namespace vparser {
           ts++;
         }
         if (ts.next() == ")") {
+          parse_token(")", ts);
           break;
         }
       }
@@ -736,8 +791,26 @@ namespace vparser {
       cout << param.first << " = " << param.second->to_string() << endl;
     }
 
-    vector<string> port_names =
-      parse_token_list("(", ")", ",", ts);
+    vector<decl_stmt*> ports;
+    parse_token("(", ts);
+
+    while (true) {
+
+
+      if (ts.next() == ")") {
+        break;
+      }
+
+      decl_stmt* stmt = parse_port_declaration(ts);
+      ports.push_back(stmt);
+
+      if (ts.next() == ",") {
+        ts++;
+      }
+      
+    }
+
+    parse_token(")", ts);
 
     // Add statement parsing
     parse_token(";", ts);
@@ -751,7 +824,7 @@ namespace vparser {
 
     assert(!ts.chars_left());
 
-    return verilog_module(mod_name, port_names, statements);
+    return verilog_module(mod_name, ports, statements);
   }
 
   statement* parse_statement(const std::string& stmt_string) {
