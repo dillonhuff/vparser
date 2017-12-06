@@ -217,6 +217,23 @@ namespace vparser {
 
   }
 
+  void parse_verilog_file(const std::string& path) {
+    std::ifstream t(path);
+    std::string str((std::istreambuf_iterator<char>(t)),
+		    std::istreambuf_iterator<char>());
+
+    preprocessed_verilog prep =
+      preprocess_code(str);
+
+    vector<macro_def> macro_defs = prep.defs;
+
+    verilog_module vm = parse_module(prep.text);
+
+    cout << "------ Multi statement file -----" << endl;
+    cout << vm.to_string() << endl;
+    
+  }
+
   TEST_CASE("Reading a larger real file with multiple statements") {
     std::ifstream t("./test/samples/memory_core_unq1.v");
     std::string str((std::istreambuf_iterator<char>(t)),
@@ -236,5 +253,29 @@ namespace vparser {
 
     cout << "------ Multi statement file -----" << endl;
     cout << vm.to_string() << endl;
+  }
+
+  TEST_CASE("Parsing CGRA verilog") {
+    vector<string> paths = {
+    	"./test/samples/cb_unq2.v",
+	"./test/samples/cb_unq3.v",
+	"./test/samples/cb_unq4.v",
+	"./test/samples/mem_unq1.v",
+        "./test/samples/memory_core_unq1.v",
+	"./test/samples/memory_tile_unq1.v",
+	"./test/samples/my_ex.v",
+	"./test/samples/pe_tile_new_unq1.v",
+	"./test/samples/pe_tile_new_unq2.v",
+	"./test/samples/sb_unq1.v",
+	"./test/samples/sb_unq2.v",
+	"./test/samples/sb_unq3.v",
+	"./test/samples/sb_unq4.v",
+	"./test/samples/sb_unq5.v",
+	"./test/samples/top.v"};
+
+    for (auto& path : paths) {
+      cout << "------ Parsing " << path << endl;
+      parse_verilog_file(path);
+    }
   }
 }
