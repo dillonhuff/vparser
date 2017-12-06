@@ -263,7 +263,6 @@ namespace vparser {
 	"./test/samples/mem_unq1.v",
         "./test/samples/memory_core_unq1.v",
 	"./test/samples/memory_tile_unq1.v",
-	"./test/samples/my_ex.v",
 	"./test/samples/pe_tile_new_unq1.v",
 	"./test/samples/pe_tile_new_unq2.v",
 	"./test/samples/sb_unq1.v",
