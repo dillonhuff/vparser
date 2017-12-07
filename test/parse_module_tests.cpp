@@ -238,7 +238,7 @@ namespace vparser {
     verilog_module vm = parse_module(prep.text);
 
     cout << "------ Multi statement file -----" << endl;
-    cout << vm.to_string() << endl;
+    //cout << vm.to_string() << endl;
     
   }
 
@@ -259,8 +259,8 @@ namespace vparser {
     
     verilog_module vm = parse_module(prep.text);
 
-    cout << "------ Multi statement file -----" << endl;
-    cout << vm.to_string() << endl;
+    cout << "------ Parsed " << vm.get_name() << " -----" << endl;
+    //cout << vm.to_string() << endl;
   }
 
   TEST_CASE("Parsing CGRA verilog") {

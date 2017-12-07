@@ -147,11 +147,11 @@ namespace vparser {
   preprocess_code(const std::string& verilog_text) {
     vector<string> lines = split_lines(verilog_text);
 
-    cout << "LINES" << endl;
-    for (auto& ln : lines) {
-      cout << ln << endl;
-    }
-    cout << "END LINES" << endl;
+    // cout << "LINES" << endl;
+    // for (auto& ln : lines) {
+    //   cout << ln << endl;
+    // }
+    // cout << "END LINES" << endl;
 
     vector<macro_def> defs;
 

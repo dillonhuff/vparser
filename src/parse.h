@@ -52,7 +52,6 @@ namespace vparser {
   class verilog_module {
 
     std::string name;
-    //std::vector<std::string> port_names;
     std::vector<decl_stmt*> ports;
     std::vector<statement*> statements;
 
@@ -71,6 +70,10 @@ namespace vparser {
                    const std::vector<decl_stmt*>& ports_,
                    const std::vector<statement*>& statements_) :
       name(name), ports(ports_), statements(statements_) {}
+
+    std::string get_name() const {
+      return name;
+    }
 
     std::vector<std::string> get_port_names() const {
       std::vector<std::string> port_names;
