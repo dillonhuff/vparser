@@ -65,5 +65,24 @@ namespace vparser {
 
   }
 
+  TEST_CASE("operator precedence") {
+    string str = "a && b == c || d";
+    auto toks = tokenize(str);
+    token_stream ts(toks);
+    auto p = parse_expression(ts);
+
+    REQUIRE(p->get_type() == EXPRESSION_BINOP);
+
+    binop_expr* bop =
+      static_cast<binop_expr*>(p);
+
+    REQUIRE(bop->get_op() == "==");
+
+    auto lhs = bop->get_op0();
+
+    REQUIRE(lhs->get_type() == EXPRESSION_BINOP);
+
+  }
+
   
 }

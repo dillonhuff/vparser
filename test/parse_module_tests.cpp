@@ -263,26 +263,26 @@ namespace vparser {
     //cout << vm.to_string() << endl;
   }
 
-  TEST_CASE("Parsing CGRA verilog") {
-    vector<string> paths = {
-    	"./test/samples/cb_unq2.v",
-	"./test/samples/cb_unq3.v",
-	"./test/samples/cb_unq4.v",
-	"./test/samples/mem_unq1.v",
-        "./test/samples/memory_core_unq1.v",
-	"./test/samples/memory_tile_unq1.v",
-	"./test/samples/pe_tile_new_unq1.v",
-	"./test/samples/pe_tile_new_unq2.v",
-	"./test/samples/sb_unq1.v",
-	"./test/samples/sb_unq2.v",
-	"./test/samples/sb_unq3.v",
-	"./test/samples/sb_unq4.v",
-	"./test/samples/sb_unq5.v",
-	"./test/samples/top.v"};
+  // TEST_CASE("Parsing CGRA verilog") {
+  //   vector<string> paths = {
+  //   	"./test/samples/cb_unq2.v",
+  //       "./test/samples/cb_unq3.v",
+  //       "./test/samples/cb_unq4.v",
+  //       "./test/samples/mem_unq1.v",
+  //       "./test/samples/memory_core_unq1.v",
+  //       "./test/samples/memory_tile_unq1.v",
+  //       "./test/samples/pe_tile_new_unq1.v",
+  //       "./test/samples/pe_tile_new_unq2.v",
+  //       "./test/samples/sb_unq1.v",
+  //       "./test/samples/sb_unq2.v",
+  //       "./test/samples/sb_unq3.v",
+  //       "./test/samples/sb_unq4.v",
+  //       "./test/samples/sb_unq5.v",
+  //       "./test/samples/top.v"};
 
-    for (auto& path : paths) {
-      cout << "------ Parsing " << path << endl;
-      parse_verilog_file(path);
-    }
-  }
+  //   for (auto& path : paths) {
+  //     cout << "------ Parsing " << path << endl;
+  //     parse_verilog_file(path);
+  //   }
+  // }
 }

@@ -116,6 +116,11 @@ namespace vparser {
                expression* const operand1_) :
       op(op_), operand0(operand0_), operand1(operand1_) {}
 
+    expression* get_op0() const { return operand0; }
+    expression* get_op1() const { return operand1; }
+
+    std::string get_op() const { return op; }
+
     virtual expression_type get_type() const {
       return EXPRESSION_BINOP;
     }
