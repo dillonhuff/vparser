@@ -9,6 +9,15 @@ using namespace std;
 
 namespace vparser {
 
+  enum expression_parse_state {
+    EXPR_STATE_NONE,
+    EXPR_STATE_PAREN_EXPR,
+    EXPR_STATE_CURLY_EXPR
+  };
+
+  expression* parse_expression(token_stream& ts,
+                               const expression_parse_state expr_state);
+  
   bool is_integer(const std::string& str) {
     for (int i = 0; i < str.size(); i++) {
       if (!isdigit(str[i])) {
@@ -396,6 +405,20 @@ namespace vparser {
     } else if (nx[0] == '"') {
       ts++;
       return new string_literal_expr(nx);
+    } else if (nx == "(") {
+      parse_token("(", ts);
+
+      auto expr = parse_expression(ts, EXPR_STATE_PAREN_EXPR);
+
+      parse_token(")", ts);
+
+      return expr;
+    } else if (nx == "{") {
+      parse_token("{", ts);
+      
+      return parse_expression(ts, EXPR_STATE_CURLY_EXPR);
+    } else {
+      assert(false);
     }
 
     return expr;
@@ -432,12 +455,6 @@ namespace vparser {
       
   }
 
-  enum expression_parse_state {
-    EXPR_STATE_NONE,
-    EXPR_STATE_PAREN_EXPR,
-    EXPR_STATE_CURLY_EXPR
-  };
-
   expression* parse_expression(token_stream& ts,
                                const expression_parse_state expr_state) {
     //cout << "REMAINING: " << ts.remaining_string() << endl;
@@ -453,7 +470,9 @@ namespace vparser {
       expression* expr = nullptr;
       if (is_integer(nx) ||
           is_id(nx) ||
-          is_string_literal(nx)) {
+          is_string_literal(nx) ||
+          (nx == "(") ||
+          (nx == "{")) {
         expr = parse_basic_expression(ts);
         exprs.push_back(expr);
       } else if (nx[0] == '[') {
@@ -529,10 +548,10 @@ namespace vparser {
       }
     }
 
-    if (expr_state == EXPR_STATE_PAREN_EXPR) {
-      assert(ts.chars_left() && (ts.next() == ")"));
-      ts++;
-    }
+    // if (expr_state == EXPR_STATE_PAREN_EXPR) {
+    //   assert(ts.chars_left() && (ts.next() == ")"));
+    //   ts++;
+    // }
 
     if (expr_state == EXPR_STATE_CURLY_EXPR) {
       assert(ts.chars_left() && (ts.next() == "}"));
