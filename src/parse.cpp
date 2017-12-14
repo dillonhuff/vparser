@@ -549,6 +549,7 @@ namespace vparser {
         exprs.push_back(exp);
         
       } else if ((nx == ",") && (expr_state == EXPR_STATE_CURLY_EXPR)) {
+        assert(false);
         ts++;
         expression* exp = parse_expression(ts);
         exprs.push_back(exp);
