@@ -408,7 +408,7 @@ namespace vparser {
     } else if (nx == "(") {
       parse_token("(", ts);
 
-      auto expr = parse_expression(ts, EXPR_STATE_PAREN_EXPR);
+      auto expr = parse_expression(ts);
 
       parse_token(")", ts);
 
@@ -430,7 +430,6 @@ namespace vparser {
 
       return new concat_expr(exprs);
 
-      //return parse_expression(ts, EXPR_STATE_CURLY_EXPR);
     } else {
       assert(false);
     }
