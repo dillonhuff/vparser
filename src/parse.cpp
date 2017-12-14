@@ -415,8 +415,22 @@ namespace vparser {
       return expr;
     } else if (nx == "{") {
       parse_token("{", ts);
-      
-      return parse_expression(ts, EXPR_STATE_CURLY_EXPR);
+
+      vector<expression*> exprs;
+      while (true) {
+        exprs.push_back(parse_expression(ts));
+        if (ts.next() == "}") {
+          break;
+        }
+
+        parse_token(",", ts);
+      }
+
+      parse_token("}", ts);
+
+      return new concat_expr(exprs);
+
+      //return parse_expression(ts, EXPR_STATE_CURLY_EXPR);
     } else {
       assert(false);
     }
@@ -430,7 +444,7 @@ namespace vparser {
 
   // TODO: Update to take paren and bracket levels into account
   bool at_expression_end(const token_stream& ts) {
-    return !ts.chars_left() || (ts.next() == ":") || (ts.next() == "]") || (ts.next() == ")") || (ts.next() == "=") || (ts.next() == ";") || (ts.next() == "<=") || (ts.next() == "begin") || (ts.next() == "}");
+    return !ts.chars_left() || (ts.next() == ":") || (ts.next() == "]") || (ts.next() == ")") || (ts.next() == "=") || (ts.next() == ";") || (ts.next() == "<=") || (ts.next() == "begin") || (ts.next() == "}") || (ts.next() == ",");
   }
 
   bool is_prefix_unop(const std::string& nx) {
@@ -539,16 +553,18 @@ namespace vparser {
         expression* exp = parse_expression(ts);
         exprs.push_back(exp);
       } else {
+
+        cout << "Unsupported expr = " << nx << endl;
         assert(false);
       }
     }
 
-    if (expr_state == EXPR_STATE_CURLY_EXPR) {
-      assert(ts.chars_left() && (ts.next() == "}"));
-      ts++;
+    // if (expr_state == EXPR_STATE_CURLY_EXPR) {
+    //   assert(ts.chars_left() && (ts.next() == "}"));
+    //   ts++;
 
-      return new concat_expr(exprs);
-    }
+    //   return new concat_expr(exprs);
+    // }
     
     cout << "# of Expressions = " << exprs.size() << endl;
 
