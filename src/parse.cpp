@@ -529,12 +529,7 @@ namespace vparser {
         exprs.pop_back();
         exprs.push_back(new trinop_expr(op, op0, op1, op2));
 
-      } else if (nx == "(") {
-        ts++;
-        expression* exp = parse_expression(ts, EXPR_STATE_PAREN_EXPR);
-        exprs.push_back(exp);
       } else if (nx == "{") {
-
         ts++;
         expression* exp = parse_expression(ts, EXPR_STATE_CURLY_EXPR);
         exprs.push_back(exp);
@@ -547,11 +542,6 @@ namespace vparser {
         assert(false);
       }
     }
-
-    // if (expr_state == EXPR_STATE_PAREN_EXPR) {
-    //   assert(ts.chars_left() && (ts.next() == ")"));
-    //   ts++;
-    // }
 
     if (expr_state == EXPR_STATE_CURLY_EXPR) {
       assert(ts.chars_left() && (ts.next() == "}"));
@@ -673,18 +663,6 @@ namespace vparser {
 
     return new assign_stmt(lhs, rhs);
   }
-
-  // statement* parse_blocking_assign(token_stream& ts) {
-  //   expression* lhs = parse_expression(ts);
-
-  //   parse_token("=", ts);
-
-  //   expression* rhs = parse_expression(ts);
-
-  //   parse_token(";", ts);
-
-  //   return new blocking_assign_stmt(lhs, rhs);
-  // }
 
   statement* parse_non_blocking_assign(token_stream& ts) {
     //cout << "Parsing non blocking assign, string = " << ts.remaining_string() << endl;
