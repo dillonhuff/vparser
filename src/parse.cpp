@@ -543,30 +543,12 @@ namespace vparser {
         exprs.pop_back();
         exprs.push_back(new trinop_expr(op, op0, op1, op2));
 
-      } else if (nx == "{") {
-        ts++;
-        expression* exp = parse_expression(ts, EXPR_STATE_CURLY_EXPR);
-        exprs.push_back(exp);
-        
-      } else if ((nx == ",") && (expr_state == EXPR_STATE_CURLY_EXPR)) {
-        assert(false);
-        ts++;
-        expression* exp = parse_expression(ts);
-        exprs.push_back(exp);
       } else {
-
         cout << "Unsupported expr = " << nx << endl;
         assert(false);
       }
     }
 
-    // if (expr_state == EXPR_STATE_CURLY_EXPR) {
-    //   assert(ts.chars_left() && (ts.next() == "}"));
-    //   ts++;
-
-    //   return new concat_expr(exprs);
-    // }
-    
     cout << "# of Expressions = " << exprs.size() << endl;
 
     assert(exprs.size() == 1);
